@@ -1,3 +1,5 @@
+package reddit;
+
 import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
 import com.github.jreddit.entity.User;
@@ -24,32 +26,31 @@ public class Reddit
         setRestClient(new HttpRestClient());
         setUser(new User(getRestClient(), getuName(), getpWord()));
         getRestClient().setUserAgent("bot/1.0 by name");
-
         this.connectUser();
     }
 
-/**
- * takes in the number of submission to return
- * @param numberOfSubmission
- * @return List of the number of submissions
- */
+    /**
+     * takes in the number of submission to return
+     * @param numberOfSubmission
+     * @return List of the number of submissions
+     */
     public List<Submission> getSubmission(int numberOfSubmission) {
         Submissions sub = new Submissions(getRestClient(), getUser());
         List<Submission> submissionsSubreddit = sub.ofSubreddit(SUBMISSION_TOPIC, SubmissionSort.TOP, -1, numberOfSubmission, null, null, true);
         return  submissionsSubreddit;
 
     }
-    
-    
+
+
 
     public List<Comment> getCommentsForSubmission(String subId){
-
         Comments coms = new Comments(getRestClient(), getUser());
         List<Comment> commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
+        System.out.println("Comment.size = " + commentsSubmission.size());
         return commentsSubmission;
     }
 
-    
+
     private void connectUser() {
         try {
             getUser().connect();

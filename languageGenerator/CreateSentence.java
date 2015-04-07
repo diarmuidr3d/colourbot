@@ -1,5 +1,6 @@
 package languageGenerator;
 
+import java.lang.RuntimeException;
 import java.util.ArrayList;
 import stanfordParser.Token;
 import simplenlg.features.Feature;
@@ -83,12 +84,82 @@ public class CreateSentence {
 
 	private void parsePair(Token pair, SPhraseSpec p) {
 
+
+//  Ismail's suggestion
+//		try {
+//			String value = pair.getWord();
+//			Tags t = getTag(pair.getPosTag());
+//			// System.out.println(value+" "+t);
+//
+//			switch (t) {
+//
+//				case MODIFIER:
+//
+//					addModifier(value, p);
+//					break;
+//
+//				case NOUN:
+//
+//					addNoun(value, p);
+//					break;
+//
+//				case VERB:
+//
+//					addVerb(value, p);
+//					break;
+//
+//				case DETERMINER:
+//
+//					addDeterminer(value, p);
+//					break;
+//
+//				case PREPOSITION:
+//
+//					addPreposition(value, p);
+//					break;
+//
+//				case ADVERB:
+//
+//					addAdverb(value, p);
+//					break;
+//
+//				case ADJECTIVE:
+//
+//					addAdjective(value, p);
+//					break;
+//
+//				case CONJUNCTION:
+//
+//					addConjuncton(value, p);
+//					break;
+//
+//				case PRONOUN:
+//
+//					addProNoun(value, p);
+//					break;
+//
+//				case MODAL:
+//
+//					addModal(value, p);
+//					break;
+//
+//				case SYMBOL:
+//
+//					addSymbol(value, p);
+//					break;
+//
+//			}
+//		}
+//		catch (RuntimeException t){
+//			t.printStackTrace();
+//		}
+
+
 		if (pair.getPosTag().isEmpty()) {
 
 			throw new RuntimeException("Unable to parse the pair " + pair);
 
 		}
-
 		String value = pair.getWord();
 		Tags t = getTag(pair.getPosTag());
 		// System.out.println(value+" "+t);
