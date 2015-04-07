@@ -6,3 +6,6 @@ A package containing code for accessing the stanfordParser. You must add the .ja
 
 ###languageGenerator
 A package containing code for using simpleNLG. YOu must add the .jar to your build path in order to use it.
+
+###Jreddit
+Project containting code for Jreddit to access submissions and comments.
