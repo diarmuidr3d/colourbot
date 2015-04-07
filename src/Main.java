@@ -1,3 +1,4 @@
+import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
 
 import java.util.List;
@@ -13,9 +14,11 @@ public class Main {
 		 List<Submission> submissions =  reddit.getSubmission(1); //returns 1 submission
 
 		 for (Submission sub : submissions) {
-			 System.out.println("BEGINNING OF SUBMISSION \n"+sub);
-			 System.out.println(reddit.getCommentsForSubmission(sub.getIdentifier()));  //prints out
-			 System.out.println("END OF SUBMISSION \n");
+			String id = sub.getIdentifier();
+			 for (Comment c : reddit.getCommentsForSubmission(id)){
+				 System.out.println(c.getBody());
+			 }
+
 		 }
 		 
 		 

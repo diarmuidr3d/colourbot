@@ -44,7 +44,7 @@ public class Reddit
 
     public List<Comment> getCommentsForSubmission(String subId){
 
-        Comments coms = new Comments(restClient, user);
+        Comments coms = new Comments(getRestClient(), getUser());
         List<Comment> commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
         return commentsSubmission;
     }
