@@ -1,6 +1,6 @@
-import java.util.List;
-
 import com.github.jreddit.entity.Submission;
+
+import java.util.List;
 
 
 public class Main {

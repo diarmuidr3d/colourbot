@@ -2,7 +2,6 @@ import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
 import com.github.jreddit.entity.User;
 import com.github.jreddit.retrieval.Comments;
-import com.github.jreddit.retrieval.ExtendedComments;
 import com.github.jreddit.retrieval.Submissions;
 import com.github.jreddit.retrieval.params.CommentSort;
 import com.github.jreddit.retrieval.params.SubmissionSort;
@@ -46,11 +45,8 @@ public class Reddit
     public List<Comment> getCommentsForSubmission(String subId){
 
         Comments coms = new Comments(restClient, user);
-    	ExtendedComments extendedComs = new ExtendedComments(coms);
-		List<Comment> commentsSubmissionExtra = extendedComs.ofSubmission(subId, CommentSort.TOP, 1, null);
-		Comments.printCommentTree(commentsSubmissionExtra);
-		
-        return commentsSubmissionExtra;
+        List<Comment> commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
+        return commentsSubmission;
     }
 
     
