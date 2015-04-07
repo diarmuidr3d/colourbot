@@ -1,6 +1,7 @@
 package languageGenerator;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import stanfordParser.Token;
 import simplenlg.features.Feature;
 import simplenlg.features.InterrogativeType;
 import simplenlg.framework.LexicalCategory;
@@ -71,7 +72,7 @@ public class CreateSentence {
 
 		}
 
-		//p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.HOW_MANY);
+		// p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.HOW_MANY);
 
 		String output = realiser.realiseSentence(p);
 
@@ -90,7 +91,7 @@ public class CreateSentence {
 
 		String value = pair.getWord();
 		Tags t = getTag(pair.getPosTag());
-		//System.out.println(value+" "+t);
+		// System.out.println(value+" "+t);
 
 		switch (t) {
 
@@ -162,7 +163,6 @@ public class CreateSentence {
 	private void addModal(String value, SPhraseSpec p) {
 		NLGElement modal = nlgFactory.createWord(value, LexicalCategory.MODAL);
 		p.addModifier(modal);
-		
 
 	}
 
@@ -205,10 +205,10 @@ public class CreateSentence {
 
 	private void addVerb(String value, SPhraseSpec p) {
 
-		 NLGElement verb = nlgFactory.createWord(value, LexicalCategory.VERB);
-	p.addModifier(verb);
+		// NLGElement verb = nlgFactory.createWord(value, LexicalCategory.VERB);
+		// p.addModifier(verb);
 
-		//p.addPostModifier(value);
+		p.addPostModifier(value);
 
 	}
 
@@ -231,10 +231,10 @@ public class CreateSentence {
 
 	private void addProNoun(String value, SPhraseSpec p) {
 
-		 //NLGElement pronoun = nlgFactory.createWord(value,
-		 //LexicalCategory.PRONOUN);
+		// NLGElement pronoun = nlgFactory.createWord(value,
+		// LexicalCategory.PRONOUN);
 
-		//p.addModifier(pronoun);
+		// p.addModifier(pronoun);
 
 		p.addPostModifier(value);
 
