@@ -38,9 +38,9 @@ public class Organiser {
 				arrTemp = stanParse.parse(c.getBody());
 				simpNlG.process(arrTemp);
 				ret = c.getBody();
-	        	System.out.println(ret);
+	        	System.out.println(ret+"\n---------");
 			}
-			System.out.println();
+			//System.out.println();
 		}
     }
 

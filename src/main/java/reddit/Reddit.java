@@ -46,7 +46,7 @@ public class Reddit
     public List<Comment> getCommentsForSubmission(String subId){
         Comments coms = new Comments(getRestClient(), getUser());
         List<Comment> commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
-        System.out.println("Comment.size = " + commentsSubmission.size());
+        //System.out.println("Comment.size = " + commentsSubmission.size());
         return commentsSubmission;
     }
 

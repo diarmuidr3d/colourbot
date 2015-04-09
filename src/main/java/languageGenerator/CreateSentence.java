@@ -77,7 +77,7 @@ public class CreateSentence {
 
 		String output = realiser.realiseSentence(p);
 
-		System.out.println(output);
+		//System.out.println(output);
 		return output;
 
 	}
@@ -424,7 +424,8 @@ public class CreateSentence {
 			return Tags.MODIFIER;
 
 		default:
-			throw new RuntimeException("Type " + t + " not defined");
+			//throw new RuntimeException("Type " + t + " not defined");
+			return Tags.MODIFIER;
 		}
 
 	}
