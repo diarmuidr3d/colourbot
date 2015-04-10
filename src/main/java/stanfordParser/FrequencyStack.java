@@ -11,8 +11,8 @@ public class FrequencyStack {
 		
 	}
 	
-	public Stack<Token> sortList (ArrayList<Token> parsed) {
-		Stack<Token> retVal = new Stack<Token>();
+	public HashMap<String, Stack<Token>> sortList (ArrayList<Token> parsed) {
+		HashMap<String, Stack<Token>> retVal = new HashMap<String, Stack<Token>>();
 		HashMap<String, Integer> location = new HashMap<String, Integer>();
 		SortedMap<Integer, HashMap<String, Token>> sortedFreq = new TreeMap<Integer, HashMap<String, Token>>(java.util.Collections.reverseOrder());
 		for(Token each : parsed) {
@@ -34,7 +34,10 @@ public class FrequencyStack {
 		}
 		for(Integer i : sortedFreq.keySet()) {
 			for(Token t : sortedFreq.get(i).values()) {
-				retVal.add(t);
+				if (!retVal.containsKey(t.getPosTag())) {
+					retVal.put(t.getPosTag(), new Stack<Token>());
+				}
+				retVal.get(t.getPosTag()).push(t);
 			}
 		}
 		return retVal;
@@ -48,16 +51,17 @@ public class FrequencyStack {
 		FrequencyStack f = new FrequencyStack();
 		ArrayList<Token> a = new ArrayList<Token>();
 		a.add(new Token("a","NN"));
-		a.add(new Token("a","N"));
+		a.add(new Token("as","NNS"));
 		a.add(new Token("b","NN"));
 		a.add(new Token("c","NN"));
 		a.add(new Token("d","NN"));
-		a.add(new Token("a","N"));
-		a.add(new Token("a","N"));
+		a.add(new Token("city","NNP"));
+		a.add(new Token("a","NN"));
 		a.add(new Token("b","NN"));
-		Stack<Token> x = f.sortList(a);
-		for(Token z : x) {
-			System.out.println(z.getWord());
+		HashMap<String, Stack<Token>> x = f.sortList(a);
+		for(Stack<Token> y : x.values()) {
+			for (Token z : y) System.out.println(z.getWord());
+			System.out.println();
 		}
 	}
 }
