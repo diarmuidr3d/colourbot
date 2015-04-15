@@ -1,4 +1,4 @@
-package main.java.languageGenerator;
+package languageGenerator;
 
 import java.util.ArrayList;
 
