@@ -1,8 +1,7 @@
-package languageGenerator;
+package main.java.languageGenerator;
 
-import java.lang.RuntimeException;
 import java.util.ArrayList;
-import stanfordParser.Token;
+
 import simplenlg.features.Feature;
 import simplenlg.features.InterrogativeType;
 import simplenlg.framework.LexicalCategory;
@@ -11,6 +10,8 @@ import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
+import stanfordParser.Token;
+
 
 public class CreateSentence {
 
@@ -73,96 +74,26 @@ public class CreateSentence {
 
 		}
 
-		// p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.HOW_MANY);
+		//p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.HOW_MANY);
 
 		String output = realiser.realiseSentence(p);
 
-		//System.out.println(output);
+		System.out.println(output);
 		return output;
 
 	}
 
 	private void parsePair(Token pair, SPhraseSpec p) {
 
-
-//  Ismail's suggestion
-//		try {
-//			String value = pair.getWord();
-//			Tags t = getTag(pair.getPosTag());
-//			// System.out.println(value+" "+t);
-//
-//			switch (t) {
-//
-//				case MODIFIER:
-//
-//					addModifier(value, p);
-//					break;
-//
-//				case NOUN:
-//
-//					addNoun(value, p);
-//					break;
-//
-//				case VERB:
-//
-//					addVerb(value, p);
-//					break;
-//
-//				case DETERMINER:
-//
-//					addDeterminer(value, p);
-//					break;
-//
-//				case PREPOSITION:
-//
-//					addPreposition(value, p);
-//					break;
-//
-//				case ADVERB:
-//
-//					addAdverb(value, p);
-//					break;
-//
-//				case ADJECTIVE:
-//
-//					addAdjective(value, p);
-//					break;
-//
-//				case CONJUNCTION:
-//
-//					addConjuncton(value, p);
-//					break;
-//
-//				case PRONOUN:
-//
-//					addProNoun(value, p);
-//					break;
-//
-//				case MODAL:
-//
-//					addModal(value, p);
-//					break;
-//
-//				case SYMBOL:
-//
-//					addSymbol(value, p);
-//					break;
-//
-//			}
-//		}
-//		catch (RuntimeException t){
-//			t.printStackTrace();
-//		}
-
-
 		if (pair.getPosTag().isEmpty()) {
 
 			throw new RuntimeException("Unable to parse the pair " + pair);
 
 		}
+
 		String value = pair.getWord();
 		Tags t = getTag(pair.getPosTag());
-		// System.out.println(value+" "+t);
+		//System.out.println(value+" "+t);
 
 		switch (t) {
 
@@ -234,6 +165,7 @@ public class CreateSentence {
 	private void addModal(String value, SPhraseSpec p) {
 		NLGElement modal = nlgFactory.createWord(value, LexicalCategory.MODAL);
 		p.addModifier(modal);
+		
 
 	}
 
@@ -276,10 +208,10 @@ public class CreateSentence {
 
 	private void addVerb(String value, SPhraseSpec p) {
 
-		// NLGElement verb = nlgFactory.createWord(value, LexicalCategory.VERB);
-		// p.addModifier(verb);
+		 NLGElement verb = nlgFactory.createWord(value, LexicalCategory.VERB);
+	p.addModifier(verb);
 
-		p.addPostModifier(value);
+		//p.addPostModifier(value);
 
 	}
 
@@ -302,10 +234,10 @@ public class CreateSentence {
 
 	private void addProNoun(String value, SPhraseSpec p) {
 
-		// NLGElement pronoun = nlgFactory.createWord(value,
-		// LexicalCategory.PRONOUN);
+		 //NLGElement pronoun = nlgFactory.createWord(value,
+		 //LexicalCategory.PRONOUN);
 
-		// p.addModifier(pronoun);
+		//p.addModifier(pronoun);
 
 		p.addPostModifier(value);
 
@@ -424,8 +356,7 @@ public class CreateSentence {
 			return Tags.MODIFIER;
 
 		default:
-			//throw new RuntimeException("Type " + t + " not defined");
-			return Tags.MODIFIER;
+			throw new RuntimeException("Type " + t + " not defined");
 		}
 
 	}
