@@ -1,9 +1,8 @@
-package main.java.languageGenerator;
+package languageGenerator;
 
 import java.util.ArrayList;
-
-import simplenlg.features.Feature;
-import simplenlg.features.InterrogativeType;
+import java.util.HashMap;
+import java.util.Stack;
 import simplenlg.framework.LexicalCategory;
 import simplenlg.framework.NLGElement;
 import simplenlg.framework.NLGFactory;
@@ -12,7 +11,6 @@ import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 import stanfordParser.Token;
 
-
 public class CreateSentence {
 
 	Lexicon lexicon = Lexicon.getDefaultLexicon();
@@ -20,61 +18,82 @@ public class CreateSentence {
 	Realiser realiser = new Realiser(lexicon);
 
 	private enum Tags {
-		NOUN, VERB, MODIFIER, PREPOSITION, DETERMINER, ADVERB, ADJECTIVE, PRONOUN, CONJUNCTION, MODAL, SYMBOL
+		NOUN, VERB, MODIFIER, PREPOSITION, DETERMINER, ADVERB, ADJECTIVE, PRONOUN, CONJUNCTION, MODAL, SYMBOL,
 	}
 
 	public static void main(String[] args) {
+
 		ArrayList<Token> list = new ArrayList<Token>();
 
-		Token token = new Token("At", "IN");
-		Token token2 = new Token("least", "JJS");
-		Token token3 = new Token("15", "CD");
-		Token token4 = new Token("dead", "JJ");
-		Token token5 = new Token("and", "CC");
-		Token token6 = new Token("60", "CD");
-		Token token7 = new Token("wounded", "JJ");
-		Token token8 = new Token("as", "RB");
-		Token token9 = new Token("Al-Shabab", "JJ");
-		Token token10 = new Token("gunmen", "NNS");
-		Token token11 = new Token("attack", "VBP");
-		Token token12 = new Token("university", "NN");
-		Token token13 = new Token("in", "IN");
-		Token token14 = new Token("Kenya", "NNP");
-		Token token15 = new Token("targeting", "VBG");
-		Token token16 = new Token("Christians", "NNS");
+		FrequencyStack f = new FrequencyStack();
+		ArrayList<Token> a = new ArrayList<Token>();
+		a.add(new Token("President", "NNP"));
+		a.add(new Token("Obama", "NNP"));
+		a.add(new Token("Castro", "NNP"));
+		a.add(new Token("Cuba", "NNP"));
+		a.add(new Token("phone", "NN"));
+		a.add(new Token("conversation", "NN"));
+		a.add(new Token("leaders", "NNS"));
+		a.add(new Token("countries", "NNS"));
+		a.add(new Token("years", "NNS"));
 
-		list.add(token);
-		list.add(token2);
-		list.add(token3);
-		list.add(token4);
-		list.add(token5);
-		list.add(token6);
-		list.add(token7);
-		list.add(token8);
-		list.add(token9);
-		list.add(token10);
-		list.add(token11);
-		list.add(token12);
-		list.add(token13);
-		list.add(token14);
-		list.add(token15);
-		list.add(token16);
+		HashMap<String, Stack<Token>> x = f.sortList(a);
 
-		new CreateSentence().process(list);
+		list.add(new Token("Shouts", "VBZ"));
+		list.add(new Token("from", "IN"));
+		list.add(new Token("the", "DT"));
+		list.add(new Token("window", "NN"));
+		list.add(new Token("startling", "JJ"));
+		list.add(new Token("evening", "NN"));
+		list.add(new Token("in", "IN"));
+		list.add(new Token("the", "DT"));
+		list.add(new Token("quadrangle", "NN"));
+		list.add(new Token("a", "DT"));
+		list.add(new Token("deaf", "JJ"));
+		list.add(new Token("gardener", "NN"));
+		list.add(new Token("aproned", "JJ"));
+		list.add(new Token("masked", "VBN"));
+		list.add(new Token("with", "IN"));
+		list.add(new Token("Matthew", "NNP"));
+		list.add(new Token("Arnold", "NNP"));
+		list.add(new Token("s", "POS"));
+		list.add(new Token("face", "NN"));
+		list.add(new Token("pushes", "VBZ"));
+		list.add(new Token("his", "PRP$"));
+		list.add(new Token("Mower", "NN"));
+		list.add(new Token("on the", "NN"));
+		list.add(new Token("sombre", "JJ"));
+		list.add(new Token("lawn", "NN"));
+		list.add(new Token("watching", "VBG"));
+		list.add(new Token("narrowly", "RB"));
+		list.add(new Token("the", "DT"));
+		list.add(new Token("dancing", "NN"));
+		list.add(new Token("notes", "NNS"));
+		list.add(new Token("of", "IN"));
+		list.add(new Token("grasshalms", "NNS"));
+
+		new CreateSentence().process(list, x);
 
 	}
 
-	public String process(ArrayList<Token> list) {
+	public String process(ArrayList<Token> list,
+			HashMap<String, Stack<Token>> stack) {
 
 		SPhraseSpec p = nlgFactory.createClause();
 
 		for (Token pair : list) {
+			String type = pair.getPosTag();
+			Stack<Token> readStack = stack.get(type);
+			if (readStack != null) {
+				if (!readStack.isEmpty()) {
+					Token token = readStack.pop();
+					pair = token;
+				}
+			}
 
 			parsePair(pair, p);
 
 		}
-
-		//p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.HOW_MANY);
 
 		String output = realiser.realiseSentence(p);
 
@@ -85,162 +104,73 @@ public class CreateSentence {
 
 	private void parsePair(Token pair, SPhraseSpec p) {
 
-		if (pair.getPosTag().isEmpty()) {
+		try {
+			String value = pair.getWord();
+			Tags t = getTag(pair.getPosTag());
+			// System.out.println(value + " " + t);
 
-			throw new RuntimeException("Unable to parse the pair " + pair);
+			switch (t) {
 
+			case MODIFIER:
+
+				addModifier(value, p);
+				break;
+
+			case NOUN:
+
+				addNoun(value, p);
+				break;
+
+			case VERB:
+
+				addVerb(value, p);
+				break;
+
+			case DETERMINER:
+
+				addDeterminer(value, p);
+				break;
+
+			case PREPOSITION:
+
+				addPreposition(value, p);
+				break;
+
+			case ADVERB:
+
+				addAdverb(value, p);
+				break;
+
+			case ADJECTIVE:
+
+				addAdjective(value, p);
+				break;
+
+			case CONJUNCTION:
+
+				addConjuncton(value, p);
+				break;
+
+			case PRONOUN:
+
+				addProNoun(value, p);
+				break;
+
+			case MODAL:
+
+				addModal(value, p);
+				break;
+
+			case SYMBOL:
+
+				addSymbol(value, p);
+				break;
+
+			}
+
+		} catch (RuntimeException t) {
+			t.printStackTrace();
 		}
-
-		String value = pair.getWord();
-		Tags t = getTag(pair.getPosTag());
-		//System.out.println(value+" "+t);
-
-		switch (t) {
-
-		case MODIFIER:
-
-			addModifier(value, p);
-			break;
-
-		case NOUN:
-
-			addNoun(value, p);
-			break;
-
-		case VERB:
-
-			addVerb(value, p);
-			break;
-
-		case DETERMINER:
-
-			addDeterminer(value, p);
-			break;
-
-		case PREPOSITION:
-
-			addPreposition(value, p);
-			break;
-
-		case ADVERB:
-
-			addAdverb(value, p);
-			break;
-
-		case ADJECTIVE:
-
-			addAdjective(value, p);
-			break;
-
-		case CONJUNCTION:
-
-			addConjuncton(value, p);
-			break;
-
-		case PRONOUN:
-
-			addProNoun(value, p);
-			break;
-
-		case MODAL:
-
-			addModal(value, p);
-			break;
-
-		case SYMBOL:
-
-			addSymbol(value, p);
-			break;
-
-		}
-	}
-
-	private void addSymbol(String value, SPhraseSpec p) {
-		NLGElement symbol = nlgFactory
-				.createWord(value, LexicalCategory.SYMBOL);
-		p.addModifier(symbol);
-
-	}
-
-	private void addModal(String value, SPhraseSpec p) {
-		NLGElement modal = nlgFactory.createWord(value, LexicalCategory.MODAL);
-		p.addModifier(modal);
-		
-
-	}
-
-	private void addConjuncton(String value, SPhraseSpec p) {
-
-		NLGElement conjunction = nlgFactory.createWord(value,
-				LexicalCategory.CONJUNCTION);
-		p.addModifier(conjunction);
-
-	}
-
-	private void addAdjective(String value, SPhraseSpec p) {
-
-		NLGElement adjective = nlgFactory.createWord(value,
-				LexicalCategory.ADJECTIVE);
-		p.addModifier(adjective);
-
-	}
-
-	private void addPreposition(String value, SPhraseSpec p) {
-
-		NLGElement preposition = nlgFactory.createWord(value,
-				LexicalCategory.PREPOSITION);
-		p.addModifier(preposition);
-
-	}
-
-	private void addDeterminer(String value, SPhraseSpec p) {
-
-		NLGElement determiner = nlgFactory.createWord(value,
-				LexicalCategory.DETERMINER);
-		p.addModifier(determiner);
-
-	}
-
-	private void addModifier(String value, SPhraseSpec p) {
-		p.addModifier(value);
-
-	}
-
-	private void addVerb(String value, SPhraseSpec p) {
-
-		 NLGElement verb = nlgFactory.createWord(value, LexicalCategory.VERB);
-	p.addModifier(verb);
-
-		//p.addPostModifier(value);
-
-	}
-
-	private void addNoun(String value, SPhraseSpec p) {
-
-		NLGElement noun = nlgFactory.createWord(value, LexicalCategory.NOUN);
-		p.addModifier(noun);
-
-	}
-
-	private void addAdverb(String value, SPhraseSpec p) {
-
-		// NLGElement adverb = nlgFactory
-		// .createWord(value, LexicalCategory.ADVERB);
-		// p.addModifier(adverb);
-
-		p.addPostModifier(value);
-
-	}
-
-	private void addProNoun(String value, SPhraseSpec p) {
-
-		 //NLGElement pronoun = nlgFactory.createWord(value,
-		 //LexicalCategory.PRONOUN);
-
-		//p.addModifier(pronoun);
-
-		p.addPostModifier(value);
-
 	}
 
 	private Tags getTag(String t) {
@@ -356,8 +286,83 @@ public class CreateSentence {
 			return Tags.MODIFIER;
 
 		default:
-			throw new RuntimeException("Type " + t + " not defined");
+			// throw new RuntimeException("Type " + t + " not defined");
+			return Tags.MODIFIER;
 		}
+
+	}
+
+	private void addSymbol(String value, SPhraseSpec p) {
+		NLGElement symbol = nlgFactory
+				.createWord(value, LexicalCategory.SYMBOL);
+		p.addModifier(symbol);
+
+	}
+
+	private void addModal(String value, SPhraseSpec p) {
+		NLGElement modal = nlgFactory.createWord(value, LexicalCategory.MODAL);
+		p.addModifier(modal);
+
+	}
+
+	private void addConjuncton(String value, SPhraseSpec p) {
+
+		NLGElement conjunction = nlgFactory.createWord(value,
+				LexicalCategory.CONJUNCTION);
+		p.addModifier(conjunction);
+
+	}
+
+	private void addAdjective(String value, SPhraseSpec p) {
+
+		NLGElement adjective = nlgFactory.createWord(value,
+				LexicalCategory.ADJECTIVE);
+		p.addModifier(adjective);
+
+	}
+
+	private void addPreposition(String value, SPhraseSpec p) {
+
+		NLGElement preposition = nlgFactory.createWord(value,
+				LexicalCategory.PREPOSITION);
+		p.addModifier(preposition);
+
+	}
+
+	private void addDeterminer(String value, SPhraseSpec p) {
+
+		NLGElement determiner = nlgFactory.createWord(value,
+				LexicalCategory.DETERMINER);
+		p.addModifier(determiner);
+
+	}
+
+	private void addModifier(String value, SPhraseSpec p) {
+		p.addModifier(value);
+
+	}
+
+	private void addVerb(String value, SPhraseSpec p) {
+
+		p.addPostModifier(value);
+
+	}
+
+	private void addAdverb(String value, SPhraseSpec p) {
+
+		p.addPostModifier(value);
+
+	}
+
+	private void addProNoun(String value, SPhraseSpec p) {
+
+		p.addPostModifier(value);
+
+	}
+
+	private void addNoun(String value, SPhraseSpec p) {
+		NLGElement noun = nlgFactory.createWord(value, LexicalCategory.NOUN);
+		p.addModifier(noun);
 
 	}
 
