@@ -28,20 +28,20 @@ public class Organiser {
         	ArrayList<Token> arrTemp = stanParse.parse(s.);
         	simpNLG.process(arrTemp);
         }*/
-        for (Submission sub : submissions) {
-			//System.out.println("SUBMISSION TITLE :"+sub.getTitle() + "\n\n" + "COMMENTS:\n");
-        	ArrayList<Token> arrTemp = stanParse.parse(sub.getTitle());
-        	String ret = simpNlG.process(arrTemp);
-        	System.out.println(ret);
-			String id = sub.getIdentifier();
-			for (Comment c : reddit.getCommentsForSubmission(id)){
-				arrTemp = stanParse.parse(c.getBody());
-				simpNlG.process(arrTemp);
-				ret = c.getBody();
-	        	System.out.println(ret+"\n---------");
-			}
-			//System.out.println();
-		}
+//        for (Submission sub : submissions) {
+//			//System.out.println("SUBMISSION TITLE :"+sub.getTitle() + "\n\n" + "COMMENTS:\n");
+//        	ArrayList<Token> arrTemp = stanParse.parse(sub.getTitle());
+//        	String ret = simpNlG.process(arrTemp);
+//        	System.out.println(ret);
+//			String id = sub.getIdentifier();
+//			for (Comment c : reddit.getCommentsForSubmission(id)){
+//				arrTemp = stanParse.parse(c.getBody());
+//				simpNlG.process(arrTemp);
+//				ret = c.getBody();
+//	        	System.out.println(ret+"\n---------");
+//			}
+//			//System.out.println();
+//		}
     }
 
 }
