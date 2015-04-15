@@ -3,12 +3,14 @@ package languageGenerator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+
 import simplenlg.framework.LexicalCategory;
 import simplenlg.framework.NLGElement;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
+import stanfordParser.FrequencyStack;
 import stanfordParser.Token;
 
 public class CreateSentence {
