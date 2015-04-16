@@ -99,7 +99,7 @@ public class CreateSentence {
 
 		String output = realiser.realiseSentence(p);
 
-		System.out.println(output);
+//		System.out.println(output);
 		return output;
 
 	}
