@@ -38,9 +38,9 @@ public class Parser {
 		        String pos = token.get(PartOfSpeechAnnotation.class);
 		        // this is the NER label of the token
 		        //String ne = token.get(NamedEntityTagAnnotation.class);
-		        if(!word.contains("http://")) {
-		        	retVal.add(new Token(word,pos));
-		        }
+		        if(!word.contains("http://")) retVal.add(new Token(word,pos)); 
+		        if(word.equals("-LRB-")) word = "(";
+		        if(word.equals("-RRB-")) word = ")";
 		      }
 		    }
 		return retVal;
