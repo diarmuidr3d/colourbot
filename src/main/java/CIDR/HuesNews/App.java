@@ -1,6 +1,8 @@
 package CIDR.HuesNews;
 
+import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
+
 import fileReader.TextBot;
 import languageGenerator.CreateSentence;
 import reddit.Reddit;
@@ -27,6 +29,10 @@ public class App
 		
 		List<Submission> submissions =  reddit.getSubmission(1); //returns 1 submission
 		String headline = submissions.get(0).getTitle();
+		String id = submissions.get(0).getIdentifier();
+		for (Comment c : reddit.getCommentsForSubmission(id)){
+			headline += "\n"+c.getBody();
+		}
 
 
 		ArrayList<Token> tokenHeadline = stanParse.parse(headline);
@@ -37,13 +43,14 @@ public class App
 		HashMap<String, Stack<Token>> sortedListUly = fs.sortList(tokenUly);
 
 
-		String generatedSentenceFromHeadline = sentenceGenerator.process(tokenHeadline, sortedListHeadline);
-		String generatedSentenceFromUly = sentenceGenerator.process(tokenHeadline, sortedListHeadline);
+		//String generatedSentenceFromHeadline = sentenceGenerator.process(tokenHeadline, sortedListHeadline);
+		String generatedSentenceFromUly = sentenceGenerator.process(tokenUly, sortedListHeadline);
 
-		System.out.println(sortedListHeadline);
-		System.out.println(sortedListUly);
+		System.out.println("The stack"+sortedListHeadline);
+		//System.out.println(sortedListUly);
 
-		System.out.println("generated Headline = " + generatedSentenceFromHeadline);
+		//System.out.println("generated Headline = " + generatedSentenceFromHeadline);
+		System.out.println("Original Sentence"+tokenUly);
 		System.out.println("generated From Uly = " + generatedSentenceFromUly);
 
 
