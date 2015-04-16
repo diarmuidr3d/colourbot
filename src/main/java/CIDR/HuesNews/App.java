@@ -34,9 +34,13 @@ public class App
 			headline += "\n"+c.getBody();
 		}
 
-
+		//System.out.println(headline);
 		ArrayList<Token> tokenHeadline = stanParse.parse(headline);
 		ArrayList<Token> tokenUly = stanParse.parse(textbot.getRandom());
+		
+		while (!sentenceGenerator.containsNoun(tokenUly)) {
+			tokenUly = stanParse.parse(textbot.getRandom());
+		}
 
 		HashMap<String, Stack<Token>> sortedListHeadline = fs.sortList(tokenHeadline);
 
@@ -46,7 +50,7 @@ public class App
 		//String generatedSentenceFromHeadline = sentenceGenerator.process(tokenHeadline, sortedListHeadline);
 		String generatedSentenceFromUly = sentenceGenerator.process(tokenUly, sortedListHeadline);
 
-		System.out.println("The stack"+sortedListHeadline);
+		//System.out.println("The stack"+sortedListHeadline);
 		//System.out.println(sortedListUly);
 
 		//System.out.println("generated Headline = " + generatedSentenceFromHeadline);

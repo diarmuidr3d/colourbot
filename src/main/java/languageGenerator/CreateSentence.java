@@ -370,7 +370,7 @@ public class CreateSentence {
 	}
 	
 	
-	private boolean containsNoun(ArrayList<Token> tokens) {
+	public boolean containsNoun(ArrayList<Token> tokens) {
 
 		FrequencyStack f = new FrequencyStack();
 		HashMap<String, Stack<Token>> temp = f.sortList(tokens);
