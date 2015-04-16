@@ -297,13 +297,13 @@ public class CreateSentence {
 	private void addSymbol(String value, SPhraseSpec p) {
 		NLGElement symbol = nlgFactory
 				.createWord(value, LexicalCategory.SYMBOL);
-		p.addModifier(symbol);
+		p.addModifier(value);
 
 	}
 
 	private void addModal(String value, SPhraseSpec p) {
 		NLGElement modal = nlgFactory.createWord(value, LexicalCategory.MODAL);
-		p.addModifier(modal);
+		p.addModifier(value);
 
 	}
 
@@ -311,7 +311,7 @@ public class CreateSentence {
 
 		NLGElement conjunction = nlgFactory.createWord(value,
 				LexicalCategory.CONJUNCTION);
-		p.addModifier(conjunction);
+		p.addModifier(value);
 
 	}
 
@@ -319,7 +319,7 @@ public class CreateSentence {
 
 		NLGElement adjective = nlgFactory.createWord(value,
 				LexicalCategory.ADJECTIVE);
-		p.addModifier(adjective);
+		p.addModifier(value);
 
 	}
 
@@ -327,15 +327,16 @@ public class CreateSentence {
 
 		NLGElement preposition = nlgFactory.createWord(value,
 				LexicalCategory.PREPOSITION);
-		p.addModifier(preposition);
+		p.addModifier(value);
 
+		
 	}
 
 	private void addDeterminer(String value, SPhraseSpec p) {
 
 		NLGElement determiner = nlgFactory.createWord(value,
 				LexicalCategory.DETERMINER);
-		p.addModifier(determiner);
+		p.addModifier(value);
 
 	}
 
