@@ -3,12 +3,14 @@ package languageGenerator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+
 import simplenlg.framework.LexicalCategory;
 import simplenlg.framework.NLGElement;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
+import stanfordParser.FrequencyStack;
 import stanfordParser.Token;
 
 public class CreateSentence {
@@ -363,6 +365,29 @@ public class CreateSentence {
 	private void addNoun(String value, SPhraseSpec p) {
 		NLGElement noun = nlgFactory.createWord(value, LexicalCategory.NOUN);
 		p.addModifier(noun);
+
+	}
+	
+	
+	private boolean containsNoun(ArrayList<Token> tokens) {
+
+		FrequencyStack f = new FrequencyStack();
+		HashMap<String, Stack<Token>> temp = f.sortList(tokens);
+		boolean nounPresent = false;
+
+		Stack<Token> readStack2 = temp.get("NN");
+		Stack<Token> readStack3 = temp.get("NNP");
+		Stack<Token> readStack4 = temp.get("NNS");
+		Stack<Token> readStack5 = temp.get("NNPS");
+
+		if (readStack2 != null || readStack3 != null || readStack4 != null
+				|| readStack5 != null) {
+
+			nounPresent = true;
+
+		}
+
+		return nounPresent;
 
 	}
 
