@@ -365,7 +365,7 @@ public class CreateSentence {
 
 	private void addNoun(String value, SPhraseSpec p) {
 		NLGElement noun = nlgFactory.createWord(value, LexicalCategory.NOUN);
-		p.addModifier(noun);
+		p.addModifier(value);
 
 	}
 	
