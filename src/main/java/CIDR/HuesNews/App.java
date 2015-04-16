@@ -25,7 +25,7 @@ public class App
 		FrequencyStack fs = new FrequencyStack();
 		TwitterBot CIDRBOT = new TwitterBot();
 		CreateSentence sentenceGenerator = new CreateSentence();
-
+		
 		
 		List<Submission> submissions =  reddit.getSubmission(1); //returns 1 submission
 		String headline = submissions.get(0).getTitle();
