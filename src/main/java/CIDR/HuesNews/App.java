@@ -36,12 +36,14 @@ public class App
 
 		//System.out.println(headline);
 		ArrayList<Token> tokenHeadline = stanParse.parse(headline);
-		ArrayList<Token> tokenUly = stanParse.parse(textbot.getRandom());
+		String line = textbot.getRandom();
+		ArrayList<Token> tokenUly = stanParse.parse(line);
 		
 		while (!sentenceGenerator.containsNoun(tokenUly)) {
+			line = textbot.getRandom();
 			tokenUly = stanParse.parse(textbot.getRandom());
 		}
-
+		System.out.println("Original:"+line);
 		HashMap<String, Stack<Token>> sortedListHeadline = fs.sortList(tokenHeadline);
 
 		HashMap<String, Stack<Token>> sortedListUly = fs.sortList(tokenUly);
