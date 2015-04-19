@@ -20,4 +20,15 @@ public class Token {
 	public String toString() {
 		return word+"\\"+posTag;
 	}
+	
+	public int hashCode(){
+		return word.hashCode();
+	}
+	
+	public boolean equals(Object o) {
+		if (o.getClass() == this.getClass()) {
+			Token t = (Token) o;
+			return (this.getWord() == t.getWord() && this.getPosTag() == t.getPosTag());
+		} else return false;
+	}
 }
