@@ -12,10 +12,12 @@ import java.util.Random;
 public class TextBot {
 
 	private ArrayList<String> sentences;
+	private int longestSentence;
 	
 	public TextBot(String filename) {
 		BufferedReader br;
 		String line = null, target = "";
+		longestSentence = 0;
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
 			while ((line = br.readLine()) != null) {
@@ -31,9 +33,19 @@ public class TextBot {
 	    bi.setText(target);
 	    while (bi.next() != BreakIterator.DONE) {
 	        sentence = target.substring(index, bi.current());
+	        if (sentence.length() > longestSentence) longestSentence = sentence.length();
 	        sentences.add(sentence);
 	        index = bi.current();
 	    }
+	}
+	
+	public String getRandom (int minLength) {
+		if (minLength > longestSentence) return null;
+		String ret = getRandom();
+		while (ret.length() < minLength) {
+			ret = getRandom();
+		}
+		return ret;
 	}
 	
 	public String getRandom() {
