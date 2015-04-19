@@ -14,8 +14,8 @@ public class TextSub {
 	public String subIn(ArrayList<Token> sentence, HashMap<String, Stack<Token>> posTagMap) {
 		String retVal = "";
 		for(Token word : sentence) {
-			if (posTagMap.containsKey(word.getPosTag())) retVal += posTagMap.get(word.getPosTag()).pop();
-			else retVal += word.getWord();
+			if (posTagMap.containsKey(word.getPosTag())) retVal += " "+posTagMap.get(word.getPosTag()).pop().getWord();
+			else retVal += " "+word.getWord();
 		}
 		return retVal;
 	}
