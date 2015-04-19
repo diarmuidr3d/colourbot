@@ -11,6 +11,15 @@ import com.github.jreddit.retrieval.params.SubmissionSort;
 import com.github.jreddit.utils.restclient.HttpRestClient;
 import com.github.jreddit.utils.restclient.RestClient;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class Reddit
@@ -19,14 +28,28 @@ public class Reddit
     private String pWord;
     private User user;
     private RestClient restClient;
-    private final String SUBMISSION_TOPIC = "WorldNews";
+    private final String SUBMISSION_TOPIC = "WorldNews";	
+    private final String resource = "resource"+File.separatorChar;
 
-    public Reddit(String userName, String password){
-        setuName(userName);
+    public Reddit(String configFilename){
+    	login(configFilename);
+    }
+    
+    private void login(String configFilename) {
+    	String userName = null, password = null;
+    	try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(resource+configFilename)));
+			userName = br.readLine().trim();
+			password = br.readLine().trim();
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	setuName(userName);
         setpWord(password);
         setRestClient(new HttpRestClient());
         setUser(new User(getRestClient(), getuName(), getpWord()));
-        getRestClient().setUserAgent("bot/1.0 by name");
+        getRestClient().setUserAgent("RedditBot/1.0 by CIDR");
         this.connectUser();
     }
 
@@ -52,7 +75,6 @@ public class Reddit
     	}catch (RetrievalFailedException e) {
     		e.printStackTrace();
     	}
-        //System.out.println("Comment.size = " + commentsSubmission.size());
         return commentsSubmission;
     }
 

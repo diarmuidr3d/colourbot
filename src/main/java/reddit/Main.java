@@ -11,7 +11,7 @@ public class Main {
 		System.out.println("BEGIN RUN");
 
 		//test account , and password
-		Reddit reddit = new Reddit("izzy19959","u7f-ozz-nkv-Gkq");
+		Reddit reddit = new Reddit("reddit_config.txt");
 		List<Submission> submissions =  reddit.getSubmission(1); //returns 1 submission
 
 		for (Submission sub : submissions) {
