@@ -3,6 +3,7 @@ package reddit;
 import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
 import com.github.jreddit.entity.User;
+import com.github.jreddit.exception.RetrievalFailedException;
 import com.github.jreddit.retrieval.Comments;
 import com.github.jreddit.retrieval.Submissions;
 import com.github.jreddit.retrieval.params.CommentSort;
@@ -44,8 +45,13 @@ public class Reddit
 
 
     public List<Comment> getCommentsForSubmission(String subId){
+    	List<Comment> commentsSubmission = null;
+    	try {
         Comments coms = new Comments(getRestClient(), getUser());
-        List<Comment> commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
+        commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
+    	}catch (RetrievalFailedException e) {
+    		e.printStackTrace();
+    	}
         //System.out.println("Comment.size = " + commentsSubmission.size());
         return commentsSubmission;
     }
