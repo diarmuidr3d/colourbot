@@ -1,29 +1,27 @@
 package languageGenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
-import simplenlg.framework.LexicalCategory;
-import simplenlg.framework.NLGElement;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
-import stanfordParser.FrequencyStack;
-import stanfordParser.Token;
+import stanfordParser.*;
+import simplenlg.framework.DocumentElement;
 
 public class CreateSentence {
 
+	private static final int MINIMUM_SENTENCE_SIZE = 4;
 	Lexicon lexicon = Lexicon.getDefaultLexicon();
 	NLGFactory nlgFactory = new NLGFactory(lexicon);
 	Realiser realiser = new Realiser(lexicon);
 
-	private enum Tags {
-		NOUN, VERB, MODIFIER, PREPOSITION, DETERMINER, ADVERB, ADJECTIVE, PRONOUN, CONJUNCTION, MODAL, SYMBOL,
-	}
-
 	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 
 		ArrayList<Token> list = new ArrayList<Token>();
 
@@ -39,9 +37,11 @@ public class CreateSentence {
 		a.add(new Token("countries", "NNS"));
 		a.add(new Token("years", "NNS"));
 
+		// if nnp join
+
 		HashMap<String, Stack<Token>> x = f.sortList(a);
 
-		list.add(new Token("Shouts", "VBZ"));
+		list.add(new Token("shouts", "VBZ"));
 		list.add(new Token("from", "IN"));
 		list.add(new Token("the", "DT"));
 		list.add(new Token("window", "NN"));
@@ -81,314 +81,167 @@ public class CreateSentence {
 	public String process(ArrayList<Token> list,
 			HashMap<String, Stack<Token>> stack) {
 
-		SPhraseSpec p = nlgFactory.createClause();
+		List<String> VerbsAndComplements = getVerbAndComplement(list);
 
-		for (Token pair : list) {
-			String type = pair.getPosTag();
-			Stack<Token> readStack = stack.get(type);
-			if (readStack != null) {
-				if (!readStack.isEmpty()) {
-					Token token = readStack.pop();
-					pair = token;
-				}
-			}
+		SPhraseSpec p = nlgFactory.createClause(getSubjects(stack),
+				VerbsAndComplements.get(0));
 
-			parsePair(pair, p);
+		p.addComplement(VerbsAndComplements.get(1));
 
+		p.addPostModifier(getObjects(stack));
+
+		Conjunctions conjunction = new Conjunctions();
+		String conj = conjunction.getRandomConjunction();
+
+		p.addPostModifier(conj);
+
+		List<String> VerbsAndComplements2 = getVerbAndComplement(list);
+
+		SPhraseSpec p2 = nlgFactory.createClause(getSubjects(stack),
+				VerbsAndComplements2.get(0));
+
+		p2.addComplement(VerbsAndComplements2.get(1));
+
+		p2.addPostModifier(getObjects(stack));
+
+		DocumentElement s1 = nlgFactory.createSentence(p);
+		DocumentElement s2 = nlgFactory.createSentence(p2);
+
+		DocumentElement par1 = nlgFactory
+				.createParagraph(Arrays.asList(s1, s2));
+
+		String output = realiser.realise(par1).getRealisation();
+
+		output = output.replace(".", " ");
+
+		if (output.length() > 140) {
+
+			output = output.substring(0, Math.min(output.length(), 140));
 		}
 
-		String output = realiser.realiseSentence(p);
+		// System.out.println(output);
 
-//		System.out.println(output);
+		// System.out.println(list.get(0));
+
 		return output;
 
 	}
 
-	private void parsePair(Token pair, SPhraseSpec p) {
+	private List<String> getVerbAndComplement(ArrayList<Token> list) {
 
-		try {
-			String value = pair.getWord();
-			Tags t = getTag(pair.getPosTag());
-			// System.out.println(value + " " + t);
+		List<String> verbAndComplementList = new ArrayList<String>();
 
-			switch (t) {
+		String verb = null;
+		String complement = " ";
+		boolean firstVerb = false;
+		int indexCounter = 0;
+		int countFromVerb = 0;
 
-			case MODIFIER:
+		for (Token pair : list) {
 
-				addModifier(value, p);
-				break;
+			if (pair.getPosTag().equals("VB") || pair.getPosTag().equals("VBD")
+					|| pair.getPosTag().equals("VBG")
+					|| pair.getPosTag().equals("VBN")
+					|| pair.getPosTag().equals("VBP")
+					|| pair.getPosTag().equals("VBZ")) {
 
-			case NOUN:
+				if (verb == null) {
+					verb = pair.getWord();
+					firstVerb = true;
 
-				addNoun(value, p);
-				break;
-
-			case VERB:
-
-				addVerb(value, p);
-				break;
-
-			case DETERMINER:
-
-				addDeterminer(value, p);
-				break;
-
-			case PREPOSITION:
-
-				addPreposition(value, p);
-				break;
-
-			case ADVERB:
-
-				addAdverb(value, p);
-				break;
-
-			case ADJECTIVE:
-
-				addAdjective(value, p);
-				break;
-
-			case CONJUNCTION:
-
-				addConjuncton(value, p);
-				break;
-
-			case PRONOUN:
-
-				addProNoun(value, p);
-				break;
-
-			case MODAL:
-
-				addModal(value, p);
-				break;
-
-			case SYMBOL:
-
-				addSymbol(value, p);
-				break;
+				}
 
 			}
 
-		} catch (RuntimeException t) {
-			t.printStackTrace();
-		}
-	}
+			if (firstVerb == true) {
 
-	private Tags getTag(String t) {
+				if (countFromVerb > MINIMUM_SENTENCE_SIZE) {
+					if (pair.getPosTag().equals("NN")
+							|| pair.getPosTag().equals("NNS")
+							|| pair.getPosTag().equals("NNP")
+							|| pair.getPosTag().equals("NNPS")) {
 
-		switch (t.toUpperCase()) {
+						break;
+					}
+				}
 
-		case "WP":
-			return Tags.PRONOUN;
+				if (!pair.getWord().equals(verb)) {
+					complement += " ";
+					complement += pair.getWord();
 
-		case "WP$":
-			return Tags.PRONOUN;
+				}
 
-		case "PRP":
-			return Tags.PRONOUN;
+				countFromVerb++;
+			}
 
-		case "PRP$":
-			return Tags.PRONOUN;
+			indexCounter++;
 
-		case "NN":
-			return Tags.NOUN;
-
-		case "NNS":
-			return Tags.NOUN;
-
-		case "NNP":
-			return Tags.NOUN;
-
-		case "NNPS":
-			return Tags.NOUN;
-
-		case "VB":
-			return Tags.VERB;
-
-		case "VBD":
-			return Tags.VERB;
-
-		case "VBG":
-			return Tags.VERB;
-
-		case "VBN":
-			return Tags.VERB;
-
-		case "VBP":
-			return Tags.VERB;
-
-		case "VBZ":
-			return Tags.VERB;
-
-		case "JJ":
-			return Tags.ADJECTIVE;
-
-		case "JJR":
-			return Tags.ADJECTIVE;
-
-		case "JJS":
-			return Tags.ADJECTIVE;
-
-		case "RB":
-			return Tags.ADVERB;
-
-		case "WRB":
-			return Tags.ADVERB;
-
-		case "RBR":
-			return Tags.ADVERB;
-
-		case "RBS":
-			return Tags.ADVERB;
-
-		case "IN":
-			return Tags.PREPOSITION;
-
-		case "DT":
-			return Tags.DETERMINER;
-
-		case "PDT":
-			return Tags.DETERMINER;
-
-		case "WDT":
-			return Tags.DETERMINER;
-
-		case "CC":
-			return Tags.CONJUNCTION;
-
-		case "SYM":
-			return Tags.SYMBOL;
-
-		case "MD":
-			return Tags.MODAL;
-
-		case "CD":
-			return Tags.MODIFIER;
-
-		case "EX":
-			return Tags.MODIFIER;
-
-		case "FW":
-			return Tags.MODIFIER;
-
-		case "LS":
-			return Tags.MODIFIER;
-
-		case "POS":
-			return Tags.MODIFIER;
-
-		case "RP":
-			return Tags.MODIFIER;
-
-		case "TO":
-			return Tags.MODIFIER;
-
-		case "UH":
-			return Tags.MODIFIER;
-
-		default:
-			// throw new RuntimeException("Type " + t + " not defined");
-			return Tags.MODIFIER;
 		}
 
-	}
+		verbAndComplementList.add(verb);
+		verbAndComplementList.add(complement);
 
-	private void addSymbol(String value, SPhraseSpec p) {
-		NLGElement symbol = nlgFactory
-				.createWord(value, LexicalCategory.SYMBOL);
-		p.addModifier(value);
+		if (indexCounter + 1 > list.size()) {
+			indexCounter = indexCounter - 1;
+		}
+		list.subList(0, indexCounter + 1).clear();
 
-	}
-
-	private void addModal(String value, SPhraseSpec p) {
-		NLGElement modal = nlgFactory.createWord(value, LexicalCategory.MODAL);
-		p.addModifier(value);
+		return verbAndComplementList;
 
 	}
 
-	private void addConjuncton(String value, SPhraseSpec p) {
+	private String getSubjects(HashMap<String, Stack<Token>> stack) {
 
-		NLGElement conjunction = nlgFactory.createWord(value,
-				LexicalCategory.CONJUNCTION);
-		p.addModifier(value);
+		Stack<Token> readStack = stack.get("NNP");
+		if (readStack == null) {
 
-	}
+			readStack = stack.get("NNPS");
+		}
+		Token nnp1 = readStack.pop();
+		Token nnp2 = readStack.pop();
 
-	private void addAdjective(String value, SPhraseSpec p) {
+		String subject = nnp1.getWord();
+		String subject2 = nnp2.getWord();
+		String fullSubject = subject2 + " " + subject;
 
-		NLGElement adjective = nlgFactory.createWord(value,
-				LexicalCategory.ADJECTIVE);
-		p.addModifier(value);
-
-	}
-
-	private void addPreposition(String value, SPhraseSpec p) {
-
-		NLGElement preposition = nlgFactory.createWord(value,
-				LexicalCategory.PREPOSITION);
-		p.addModifier(value);
-
-		
-	}
-
-	private void addDeterminer(String value, SPhraseSpec p) {
-
-		NLGElement determiner = nlgFactory.createWord(value,
-				LexicalCategory.DETERMINER);
-		p.addModifier(value);
+		return fullSubject;
 
 	}
 
-	private void addModifier(String value, SPhraseSpec p) {
-		p.addModifier(value);
+	private String getObjects(HashMap<String, Stack<Token>> stack) {
+
+		Stack<Token> readStack = stack.get("NN");
+		if (readStack == null) {
+
+			readStack = stack.get("NNS");
+		}
+
+		Token nn1 = readStack.pop();
+
+		String object = nn1.getWord();
+
+		return object;
+	}
+
+	private List<String> conjunctionsList() {
+
+		return null;
 
 	}
 
-	private void addVerb(String value, SPhraseSpec p) {
-
-		p.addPostModifier(value);
-
-	}
-
-	private void addAdverb(String value, SPhraseSpec p) {
-
-		p.addPostModifier(value);
-
-	}
-
-	private void addProNoun(String value, SPhraseSpec p) {
-
-		p.addPostModifier(value);
-
-	}
-
-	private void addNoun(String value, SPhraseSpec p) {
-		NLGElement noun = nlgFactory.createWord(value, LexicalCategory.NOUN);
-		p.addModifier(value);
-
-	}
-	
 	public boolean containsNoun(ArrayList<Token> tokens) {
-
 		FrequencyStack f = new FrequencyStack();
 		HashMap<String, Stack<Token>> temp = f.sortList(tokens);
 		boolean nounPresent = false;
-
 		Stack<Token> readStack2 = temp.get("NN");
 		Stack<Token> readStack3 = temp.get("NNP");
 		Stack<Token> readStack4 = temp.get("NNS");
 		Stack<Token> readStack5 = temp.get("NNPS");
-
 		if (readStack2 != null || readStack3 != null || readStack4 != null
 				|| readStack5 != null) {
-
 			nounPresent = true;
-
 		}
-
 		return nounPresent;
-
 	}
 
 }
