@@ -37,7 +37,7 @@ public class Parser {
 		        if(word.equals("-RRB-")) word = ")";
 		        if((retVal.size() > 0) && pos.equals("NNP") && (retVal.get(retVal.size()-1).getPosTag().equals("NNP"))) {
 		        	Token last = retVal.remove(retVal.size()-1);
-		        	word = last +" "+word;
+		        	word = last.getWord() +" "+word;
 		        }
 		        retVal.add(new Token(word,pos));
 		      }

@@ -9,8 +9,8 @@ import java.util.Stack;
 import java.util.TreeMap;
 
 public class TFIDF implements StackBuilder {
+	
 	public TFIDF () {
-		
 	}
 
 	public HashMap<String, Stack<Token>> sortList (ArrayList<ArrayList<Token>> document) {
@@ -33,23 +33,18 @@ public class TFIDF implements StackBuilder {
 	}
 	
 	private HashMap<Token, float[]> countFreq (ArrayList<ArrayList<Token>> document) {
-		//System.out.println("CountFreq:\n");
 		HashMap<Token, float[]> ret = new HashMap<Token, float[]>();
 		int numTerms = 0;
 		for (int i = 0; i < document.size(); i++) {
-			//System.out.println("i: "+i);
 			for(Token each: document.get(i)) {
-				//System.out.print("\tToken: "+each);
 				if(!ret.containsKey(each)) {
 					float[] j = new float[document.size()];
 					for(int k=0; k < j.length; k++) j[k] = 0.0f;
 					ret.put(each, j);
 				}
 				float[] j = ret.remove(each);
-				//System.out.print(" before: "+j);
 				j[i]++;
 				ret.put(each, j);
-				//System.out.println(" after: "+j);
 				numTerms++;
 			}
 		}
@@ -58,16 +53,12 @@ public class TFIDF implements StackBuilder {
 				each[i] = each[i] / numTerms;
 			}
 		}
-
-		//System.out.print(ret);
 		return ret;
 	}
 	
 	private HashMap<Token, Float> countDocFreq (HashMap<Token, float[]> freq) {
-		//System.out.println("\n\nDocFreq:\n");
 		HashMap<Token, Float> ret = new HashMap<Token, Float>();
 		for(Token each : freq.keySet()) {
-			//System.out.print("Token: "+each);
 			float[] frequency = freq.get(each);
 			double isThere = 0;
 			for (float j : frequency) {
@@ -75,18 +66,13 @@ public class TFIDF implements StackBuilder {
 					isThere++;
 				}
 			}
-			//System.out.print(" length: "+frequency.length+" isThere: "+isThere);
 			double idf = Math.log(frequency.length / isThere);
-			//System.out.print(" IDF: "+idf);
 			float overall = 0;
 			for(float j : frequency) {
-				//System.out.print(" J: "+j);
 				overall += j*idf;
 			}
 			overall = (float) (overall/isThere);
-			//System.out.println(" Score: "+overall);
 			ret.put(each, overall);
-			
 		}
 		return ret;
 	}

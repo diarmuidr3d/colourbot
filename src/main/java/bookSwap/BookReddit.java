@@ -27,6 +27,7 @@ public class BookReddit {
 	private LanguageGen swap;
 	private int submissionNum;
 	private final int MAXSUBMISSION = 10;
+	private String lastlink;
 	
 	public BookReddit(String bookFileName, LanguageGen languageGen, StackBuilder hashStack) {
 		Ulysses = new TextBot(bookFileName);
@@ -42,6 +43,10 @@ public class BookReddit {
 		return swap.process(getBookSentence(), getRedditStack());
 	}
 	
+	public String getLastRedditLink() {
+		return lastlink;
+	}
+	
 	private ArrayList<Token> getBookSentence() {
 		String line = Ulysses.getRandom();
 		ArrayList<Token> tokenUly = stanParse.parse(line);
@@ -53,13 +58,14 @@ public class BookReddit {
 	}
 	
 	private HashMap<String, Stack<Token>> getRedditStack() {
-		List<Submission> submissions =  reddit.getSubmission(MAXSUBMISSION); //returns 1 submission
+		List<Submission> submissions =  reddit.getSubmission(MAXSUBMISSION);
 		ArrayList<String> stringComments = new ArrayList<String>();
 		String redditSub = submissions.get(submissionNum).getTitle();
 		String id = submissions.get(submissionNum).getIdentifier();
+		lastlink = submissions.get(submissionNum).getUrl();
 		List<Comment> comments = reddit.getCommentsForSubmission(id);
 		while (comments == null) {
-			submissions =  reddit.getSubmission(1); //returns 1 submission
+			submissions =  reddit.getSubmission(MAXSUBMISSION);
 			redditSub = submissions.get(submissionNum).getTitle();
 			id = submissions.get(submissionNum).getIdentifier();
 			comments = reddit.getCommentsForSubmission(id);
