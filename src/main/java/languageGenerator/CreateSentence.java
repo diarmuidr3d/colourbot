@@ -29,7 +29,7 @@ public class CreateSentence implements LanguageGen {
 	public String process(ArrayList<Token> list,
 			HashMap<String, Stack<Token>> stack) {
 
-		List<String> VerbsAndComplements = getVerbAndComplement(list);
+		List<String> VerbsAndComplements = getVerbAndComplement(list,false);
 
 		SPhraseSpec sentenceOne = nlgFactory.createClause(getSubjects(stack),
 				VerbsAndComplements.get(0));
@@ -43,7 +43,7 @@ public class CreateSentence implements LanguageGen {
 
 		sentenceOne.addPostModifier(conj);
 
-		List<String> VerbsAndComplements2 = getVerbAndComplement(list);
+		List<String> VerbsAndComplements2 = getVerbAndComplement(list,true);
 
 		SPhraseSpec sentenceTwo = nlgFactory.createClause(getSubjects(stack),
 				VerbsAndComplements2.get(0));
@@ -71,7 +71,7 @@ public class CreateSentence implements LanguageGen {
 
 	}
 
-	private List<String> getVerbAndComplement(ArrayList<Token> list) {
+	private List<String> getVerbAndComplement(ArrayList<Token> list,boolean partTwo) {
 
 		List<String> verbAndComplementList = new ArrayList<String>();
 
@@ -122,6 +122,7 @@ public class CreateSentence implements LanguageGen {
 
 		}
 
+		if(partTwo == true){verb ="";}
 		verbAndComplementList.add(verb);
 		verbAndComplementList.add(complement);
 
@@ -136,7 +137,7 @@ public class CreateSentence implements LanguageGen {
 
 	private String getSubjects(HashMap<String, Stack<Token>> stack) {
 
-		String Subject = "";
+		String subject = "";
 
 		Stack<Token> readStack = stack.get("NNP");
 
@@ -146,7 +147,7 @@ public class CreateSentence implements LanguageGen {
 
 			if (readStack == null) {
 
-				return Subject;
+				return subject;
 			}
 		}
 		Token nnp1 = readStack.pop();
