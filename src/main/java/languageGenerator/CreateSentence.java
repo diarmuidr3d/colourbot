@@ -13,14 +13,14 @@ import simplenlg.realiser.english.Realiser;
 import stanfordParser.*;
 import simplenlg.framework.DocumentElement;
 
-public class CreateSentence {
+public class CreateSentence  implements LanguageGen {
 
 	private static final int MINIMUM_SENTENCE_SIZE = 4;
 	Lexicon lexicon = Lexicon.getDefaultLexicon();
 	NLGFactory nlgFactory = new NLGFactory(lexicon);
 	Realiser realiser = new Realiser(lexicon);
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 		ArrayList<Token> list = new ArrayList<Token>();
@@ -76,7 +76,7 @@ public class CreateSentence {
 
 		new CreateSentence().process(list, x);
 
-	}
+	}*/
 
 	public String process(ArrayList<Token> list,
 			HashMap<String, Stack<Token>> stack) {
@@ -198,13 +198,14 @@ public class CreateSentence {
 			readStack = stack.get("NNPS");
 		}
 		Token nnp1 = readStack.pop();
-		Token nnp2 = readStack.pop();
+		//Token nnp2 = readStack.pop();
 
 		String subject = nnp1.getWord();
-		String subject2 = nnp2.getWord();
-		String fullSubject = subject2 + " " + subject;
+		//String subject2 = nnp2.getWord();
+		//String fullSubject = subject2 + " " + subject;
 
-		return fullSubject;
+		//return fullSubject;
+		return subject;
 
 	}
 
@@ -229,7 +230,7 @@ public class CreateSentence {
 
 	}
 
-	public boolean containsNoun(ArrayList<Token> tokens) {
+	/*public boolean containsNoun(ArrayList<Token> tokens) {
 		FrequencyStack f = new FrequencyStack();
 		HashMap<String, Stack<Token>> temp = f.sortList(tokens);
 		boolean nounPresent = false;
@@ -242,6 +243,6 @@ public class CreateSentence {
 			nounPresent = true;
 		}
 		return nounPresent;
-	}
+	}*/
 
 }

@@ -28,7 +28,7 @@ public class Token {
 	public boolean equals(Object o) {
 		if (o.getClass() == this.getClass()) {
 			Token t = (Token) o;
-			return (this.getWord() == t.getWord() && this.getPosTag() == t.getPosTag());
+			return (this.getWord().equals(t.getWord()) && this.getPosTag().equals(t.getPosTag()));
 		} else return false;
 	}
 }

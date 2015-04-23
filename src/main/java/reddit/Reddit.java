@@ -70,8 +70,8 @@ public class Reddit
     public List<Comment> getCommentsForSubmission(String subId){
     	List<Comment> commentsSubmission = null;
     	try {
-        Comments coms = new Comments(getRestClient(), getUser());
-        commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
+    		Comments coms = new Comments(getRestClient(), getUser());
+    		commentsSubmission = coms.ofSubmission(subId, null, 0, 8, 20, CommentSort.TOP);
     	}catch (RetrievalFailedException e) {
     		e.printStackTrace();
     	}

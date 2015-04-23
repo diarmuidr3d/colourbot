@@ -29,18 +29,17 @@ public class Parser {
 		pipeline.annotate(document);
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		for(CoreMap sentence: sentences) {
-		      // traversing the words in the current sentence
-		      // a CoreLabel is a CoreMap with additional token-specific methods
 		      for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
-		        // this is the text of the token
 		        String word = token.get(TextAnnotation.class);
-		        // this is the POS tag of the token
 		        String pos = token.get(PartOfSpeechAnnotation.class);
-		        // this is the NER label of the token
-		        //String ne = token.get(NamedEntityTagAnnotation.class);
-		        if(!word.contains("http://")) retVal.add(new Token(word,pos)); 
+		        if(word.contains("http://"))  continue;
 		        if(word.equals("-LRB-")) word = "(";
 		        if(word.equals("-RRB-")) word = ")";
+		        if((retVal.size() > 0) && pos.equals("NNP") && (retVal.get(retVal.size()-1).getPosTag().equals("NNP"))) {
+		        	Token last = retVal.remove(retVal.size()-1);
+		        	word = last +" "+word;
+		        }
+		        retVal.add(new Token(word,pos));
 		      }
 		    }
 		return retVal;
