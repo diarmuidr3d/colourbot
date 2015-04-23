@@ -17,8 +17,8 @@ import twitter4j.auth.AccessToken;
 
 public class TwitterBot
 {
-    private final static String CONSUMER_KEY = "hGZi2WBflbse1abdnUT0xjEIM";
-    private final static String CONSUMER_KEY_SECRET = "T1WJoGm754hDNymdrx5SS8DXj4F5J9A08SEdnNsyyKqk32RrlQ";
+    private final static String CONSUMER_KEY = "";
+    private final static String CONSUMER_KEY_SECRET = "";
 
 
 
