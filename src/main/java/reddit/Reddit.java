@@ -12,14 +12,10 @@ import com.github.jreddit.utils.restclient.HttpRestClient;
 import com.github.jreddit.utils.restclient.RestClient;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class Reddit
@@ -55,8 +51,8 @@ public class Reddit
 
     /**
      * takes in the number of submission to return
-     * @param numberOfSubmission
-     * @return List of the number of submissions
+     * @param numberOfSubmission The number of submissions to get
+     * @return List of the submissions
      */
     public List<Submission> getSubmission(int numberOfSubmission) {
         Submissions sub = new Submissions(getRestClient(), getUser());

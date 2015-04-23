@@ -17,7 +17,6 @@ public class Parser {
 	private StanfordCoreNLP pipeline;
 	
 	public Parser() {
-		// creates a StanfordCoreNLP object, with POS tagging
 		Properties props = new Properties();
 	    props.setProperty("annotators", "tokenize, ssplit, pos");
 	    pipeline = new StanfordCoreNLP(props);

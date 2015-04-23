@@ -8,11 +8,22 @@ import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
+/**
+ * Class to compute the Term Frequency - Inverse Document Frequency for documents parsed by {@link Parser}
+ * @author Diarmuid Ryan
+ * 
+ */
 public class TFIDF implements StackBuilder {
 	
 	public TFIDF () {
 	}
 
+	/**
+	 * 
+	 * @param document An ArrayList of ArrayLists where each inner list corresponds to a document. 
+	 * Tokens{@link stanfordParser.Token} are parsed by Parser {@link stanfordParser.Parser}.
+	 * @return A HashMap of stacks where the key is the pos tag and the Stack is ordered highest to lowest score 
+	 */
 	public HashMap<String, Stack<Token>> sortList (ArrayList<ArrayList<Token>> document) {
 		HashMap<Token, Float> tokenTFIDF = countDocFreq(countFreq(document));
 		HashMap<String, Stack<Token>> retVal = new HashMap<String, Stack<Token>>();
@@ -92,7 +103,7 @@ public class TFIDF implements StackBuilder {
 		to.get(1).add(new Token("France", "NNP"));
 		to.get(1).add(new Token("Greece", "NNP"));
 		to.get(1).add(new Token("mills", "NNS"));
-		HashMap<String, Stack<Token>> sorted = t.sortList(to);
+		t.sortList(to);
 		}
 	
 }

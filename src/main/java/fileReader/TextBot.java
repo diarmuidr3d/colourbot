@@ -1,6 +1,7 @@
 package fileReader;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,17 +10,27 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
+/**
+ * Takes a filename for a file, returns random sentences on demand.
+ * @author Diarmuid
+ *
+ */
 public class TextBot {
 
 	private ArrayList<String> sentences;
 	private int longestSentence;
+	private final String resource = "resource"+File.separatorChar;
 	
+	/**
+	 * Sets up the TextBot
+	 * @param filename the file to be read from, must be in the /resource/ directory
+	 */
 	public TextBot(String filename) {
 		BufferedReader br;
 		String line = null, target = "";
 		longestSentence = 0;
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(resource+filename)));
 			while ((line = br.readLine()) != null) {
 				target += line;
 			}

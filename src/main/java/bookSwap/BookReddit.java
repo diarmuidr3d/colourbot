@@ -10,13 +10,16 @@ import com.github.jreddit.entity.Submission;
 
 import languageGenerator.LanguageGen;
 import reddit.Reddit;
-import stanfordParser.FrequencyStack;
 import stanfordParser.Parser;
 import stanfordParser.StackBuilder;
-import stanfordParser.TFIDF;
 import stanfordParser.Token;
 import fileReader.TextBot;
 
+/**
+ * Class that takes top reddit posts, runs TFIDF on their comments and uses the LanguageGen specified to place them into sentences of a book
+ * @author Diarmuid
+ *
+ */
 public class BookReddit {
 	
 	private TextBot Ulysses;
@@ -29,6 +32,13 @@ public class BookReddit {
 	private final int MAXSUBMISSION = 10;
 	private String lastlink;
 	
+	/**
+	 * Sets up BookReddit
+	 * @param bookFileName the filename in which the plaintext book is stored in /resource/
+	 * @param languageGen the implementation of languageGen{@link languageGenerator.LanguageGen} to be used to generate sentences
+	 * @param hashStack the implementation of StackBuilder{@link stanfordParser.StackBuilder} to be used for scoring
+	 */
+	
 	public BookReddit(String bookFileName, LanguageGen languageGen, StackBuilder hashStack) {
 		Ulysses = new TextBot(bookFileName);
 		reddit = new Reddit("reddit_config.txt");
@@ -39,10 +49,18 @@ public class BookReddit {
 		submissionNum = 0;
 	}
 	
+	/**
+	 * Get a new constructed sentence
+	 * @return A sentence that has been processed
+	 */
 	public String get() {
 		return swap.process(getBookSentence(), getRedditStack());
 	}
 	
+	/**
+	 * Get the URL of the last reddit submission accessed
+	 * @return The article link from the last reddit post accessed.
+	 */
 	public String getLastRedditLink() {
 		return lastlink;
 	}

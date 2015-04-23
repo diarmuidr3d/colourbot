@@ -3,7 +3,6 @@ package CIDR.HuesNews;
 import java.util.concurrent.TimeUnit;
 
 import languageGenerator.CreateSentence;
-import languageGenerator.TextSub;
 import stanfordParser.TFIDF;
 import twitter.Tweeter;
 import bookSwap.BookReddit;
