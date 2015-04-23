@@ -12,7 +12,7 @@ import java.util.Random;
 
 /**
  * Takes a filename for a file, returns random sentences on demand.
- * @author Diarmuid
+ * @author Diarmuid Ryan
  *
  */
 public class TextBot {
@@ -50,6 +50,11 @@ public class TextBot {
 	    }
 	}
 	
+	/**
+	 * Gets a random sentence from the Text file
+	 * @param minLength Sets a minimum amount of characters for the returned sentence, returns null if longer than longest sentence.
+	 * @return A sentence of length greater than or equal minLength
+	 */
 	public String getRandom (int minLength) {
 		if (minLength > longestSentence) return null;
 		String ret = getRandom();
@@ -59,6 +64,10 @@ public class TextBot {
 		return ret;
 	}
 	
+	/**
+	 * Gets a random sentence from the Text file
+	 * @return A random sentence from the text file
+	 */
 	public String getRandom() {
 		if (sentences.size() > 0) {
 			Random rand = new Random();
@@ -67,9 +76,9 @@ public class TextBot {
 		} else return null;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 	    String target="ULYSSES.txt";
 		TextBot uly = new TextBot(target);
 		System.out.println(uly.getRandom());
-	}
+	}*/
 }

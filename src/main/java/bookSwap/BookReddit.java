@@ -30,6 +30,7 @@ public class BookReddit {
 	private LanguageGen swap;
 	private int submissionNum;
 	private final int MAXSUBMISSION = 10;
+	private final int MINSENTENCELENGTH = 100;
 	private String lastlink;
 	
 	/**
@@ -66,12 +67,13 @@ public class BookReddit {
 	}
 	
 	private ArrayList<Token> getBookSentence() {
-		String line = Ulysses.getRandom();
+		String line = Ulysses.getRandom(MINSENTENCELENGTH);
 		ArrayList<Token> tokenUly = stanParse.parse(line);
 		while (!containsNoun(tokenUly)) {
-			line = Ulysses.getRandom();
-			tokenUly = stanParse.parse(Ulysses.getRandom());
+			line = Ulysses.getRandom(MINSENTENCELENGTH);
+			tokenUly = stanParse.parse(line);
 		}
+		System.out.println("Sentence: "+tokenUly);
 		return tokenUly;
 	}
 	
@@ -88,6 +90,7 @@ public class BookReddit {
 			id = submissions.get(submissionNum).getIdentifier();
 			comments = reddit.getCommentsForSubmission(id);
 		}
+		System.out.println("Headline: "+redditSub);
 		submissionNum++;
 		if (submissionNum == MAXSUBMISSION) submissionNum = 0;
 		stringComments.add(redditSub);
@@ -100,6 +103,7 @@ public class BookReddit {
 		for (String each : stringComments) tokenRedditSub2.add(stanParse.parse(each));
 		//return freq.sortList(tokenRedditSub);
 		HashMap<String, Stack<Token>> a = freq.sortList(tokenRedditSub2);
+		System.out.println("Stack: "+a);
 		return a;
 	}
 	

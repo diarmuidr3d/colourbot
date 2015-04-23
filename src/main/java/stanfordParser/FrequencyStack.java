@@ -6,10 +6,13 @@ import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
+/**
+ * Gets the frequency of words and orders them into stacks by frequency and postTag
+ * @author Diarmuid Ryan
+ *
+ */
 public class FrequencyStack implements StackBuilder{
-	public FrequencyStack() {
-		
-	}
+	
 	
 	public HashMap<String, Stack<Token>> sortList (ArrayList<ArrayList<Token>> document) {
 		HashMap<String, Stack<Token>> retVal = new HashMap<String, Stack<Token>>();
