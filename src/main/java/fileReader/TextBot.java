@@ -32,7 +32,7 @@ public class TextBot {
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(resource+filename)));
 			while ((line = br.readLine()) != null) {
-				target += " "+line;
+				target += line;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
