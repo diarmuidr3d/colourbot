@@ -192,57 +192,48 @@ public class CreateSentence  implements LanguageGen {
 
 	private String getSubjects(HashMap<String, Stack<Token>> stack) {
 
+		String fullSubject = "";
+		
 		Stack<Token> readStack = stack.get("NNP");
 		if (readStack == null) {
 
 			readStack = stack.get("NNPS");
+			
+			if (readStack == null){
+				
+				return fullSubject;
+				
+			
+			}
 		}
 		Token nnp1 = readStack.pop();
-		//Token nnp2 = readStack.pop();
 
 		String subject = nnp1.getWord();
-		//String subject2 = nnp2.getWord();
-		//String fullSubject = subject2 + " " + subject;
-
-		//return fullSubject;
 		return subject;
 
 	}
 
 	private String getObjects(HashMap<String, Stack<Token>> stack) {
 
+		String object = "";
+
 		Stack<Token> readStack = stack.get("NN");
 		if (readStack == null) {
 
 			readStack = stack.get("NNS");
+
+			if (readStack == null) {
+
+				return object;
+
+			}
+
 		}
 
 		Token nn1 = readStack.pop();
 
-		String object = nn1.getWord();
-
+		object = nn1.getWord();
+		
 		return object;
 	}
-
-	private List<String> conjunctionsList() {
-
-		return null;
-
-	}
-
-	/*public boolean containsNoun(ArrayList<Token> tokens) {
-		FrequencyStack f = new FrequencyStack();
-		HashMap<String, Stack<Token>> temp = f.sortList(tokens);
-		boolean nounPresent = false;
-		Stack<Token> readStack2 = temp.get("NN");
-		Stack<Token> readStack3 = temp.get("NNP");
-		Stack<Token> readStack4 = temp.get("NNS");
-		Stack<Token> readStack5 = temp.get("NNPS");
-		if (readStack2 != null || readStack3 != null || readStack4 != null
-				|| readStack5 != null) {
-			nounPresent = true;
-		}
-		return nounPresent;
-	}*/
-
 }
