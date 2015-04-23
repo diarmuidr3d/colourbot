@@ -8,10 +8,12 @@ import java.util.Stack;
 import com.github.jreddit.entity.Comment;
 import com.github.jreddit.entity.Submission;
 
-import languageGenerator.TextSub;
+import languageGenerator.LanguageGen;
 import reddit.Reddit;
 import stanfordParser.FrequencyStack;
 import stanfordParser.Parser;
+import stanfordParser.StackBuilder;
+import stanfordParser.TFIDF;
 import stanfordParser.Token;
 import fileReader.TextBot;
 
@@ -20,19 +22,24 @@ public class BookReddit {
 	private TextBot Ulysses;
 	private Reddit reddit;
 	private Parser stanParse;
-	private FrequencyStack freq;
-	private TextSub swap;
+	//private FrequencyStack freq;
+	private StackBuilder freq;
+	private LanguageGen swap;
+	private int submissionNum;
+	private final int MAXSUBMISSION = 10;
 	
-	public BookReddit(String bookFileName) {
+	public BookReddit(String bookFileName, LanguageGen languageGen, StackBuilder hashStack) {
 		Ulysses = new TextBot(bookFileName);
 		reddit = new Reddit("reddit_config.txt");
 		stanParse = new Parser();
-		freq = new FrequencyStack();
-		swap = new TextSub();
+		//freq = new FrequencyStack();
+		freq = hashStack;
+		swap = languageGen;
+		submissionNum = 0;
 	}
 	
 	public String get() {
-		return swap.subIn(getBookSentence(), getRedditStack());
+		return swap.process(getBookSentence(), getRedditStack());
 	}
 	
 	private ArrayList<Token> getBookSentence() {
@@ -46,21 +53,30 @@ public class BookReddit {
 	}
 	
 	private HashMap<String, Stack<Token>> getRedditStack() {
-		List<Submission> submissions =  reddit.getSubmission(1); //returns 1 submission
-		String redditSub = submissions.get(0).getTitle();
-		String id = submissions.get(0).getIdentifier();
+		List<Submission> submissions =  reddit.getSubmission(MAXSUBMISSION); //returns 1 submission
+		ArrayList<String> stringComments = new ArrayList<String>();
+		String redditSub = submissions.get(submissionNum).getTitle();
+		String id = submissions.get(submissionNum).getIdentifier();
 		List<Comment> comments = reddit.getCommentsForSubmission(id);
 		while (comments == null) {
 			submissions =  reddit.getSubmission(1); //returns 1 submission
-			redditSub = submissions.get(0).getTitle();
-			id = submissions.get(0).getIdentifier();
+			redditSub = submissions.get(submissionNum).getTitle();
+			id = submissions.get(submissionNum).getIdentifier();
 			comments = reddit.getCommentsForSubmission(id);
 		}
+		submissionNum++;
+		if (submissionNum == MAXSUBMISSION) submissionNum = 0;
+		stringComments.add(redditSub);
 		for (Comment c : comments){
-			redditSub += "\n"+c.getBody();
+			//redditSub += "\n"+c.getBody();
+			stringComments.add(c.getBody());
 		}
-		ArrayList<Token> tokenRedditSub = stanParse.parse(redditSub);
-		return freq.sortList(tokenRedditSub);
+		//ArrayList<Token> tokenRedditSub = stanParse.parse(redditSub);
+		ArrayList<ArrayList<Token>> tokenRedditSub2 = new ArrayList<ArrayList<Token>>();
+		for (String each : stringComments) tokenRedditSub2.add(stanParse.parse(each));
+		//return freq.sortList(tokenRedditSub);
+		HashMap<String, Stack<Token>> a = freq.sortList(tokenRedditSub2);
+		return a;
 	}
 	
 	private boolean containsNoun(ArrayList<Token> in) {

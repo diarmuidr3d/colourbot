@@ -6,30 +6,32 @@ import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
-public class FrequencyStack {
+public class FrequencyStack implements StackBuilder{
 	public FrequencyStack() {
 		
 	}
 	
-	public HashMap<String, Stack<Token>> sortList (ArrayList<Token> parsed) {
+	public HashMap<String, Stack<Token>> sortList (ArrayList<ArrayList<Token>> document) {
 		HashMap<String, Stack<Token>> retVal = new HashMap<String, Stack<Token>>();
 		HashMap<String, Integer> location = new HashMap<String, Integer>();
 		SortedMap<Integer, HashMap<String, Token>> sortedFreq = new TreeMap<Integer, HashMap<String, Token>>(java.util.Collections.reverseOrder());
-		for(Token each : parsed) {
-			if (isNoun(each.getPosTag())) {
-				Integer freq;
-				if(location.containsKey(each.getWord())) {
-					freq = location.remove(each.getWord());
-					sortedFreq.get(freq).remove(each.getWord());
-					freq++;
-				} else {
-					freq = 1;
+		for(ArrayList<Token> parsed: document) {
+			for(Token each : parsed) {
+				if (isNoun(each.getPosTag())) {
+					Integer freq;
+					if(location.containsKey(each.getWord())) {
+						freq = location.remove(each.getWord());
+						sortedFreq.get(freq).remove(each.getWord());
+						freq++;
+					} else {
+						freq = 1;
+					}
+					location.put(each.getWord(), freq);
+					if(!sortedFreq.containsKey(freq)) {
+						sortedFreq.put(freq, new HashMap<String, Token>());
+					} 
+					sortedFreq.get(freq).put(each.getWord(), each);
 				}
-				location.put(each.getWord(), freq);
-				if(!sortedFreq.containsKey(freq)) {
-					sortedFreq.put(freq, new HashMap<String, Token>());
-				} 
-				sortedFreq.get(freq).put(each.getWord(), each);
 			}
 		}
 		for(Integer i : sortedFreq.keySet()) {
@@ -47,7 +49,7 @@ public class FrequencyStack {
 		return ((pos.equals("NN")) || (pos.equals("NNS")) || (pos.equals("NNP")) || (pos.equals("NNPS")));
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		FrequencyStack f = new FrequencyStack();
 		ArrayList<Token> a = new ArrayList<Token>();
 		a.add(new Token("a","NN"));
@@ -63,5 +65,5 @@ public class FrequencyStack {
 			for (Token z : y) System.out.println(z.getWord());
 			System.out.println();
 		}
-	}
+	}*/
 }
