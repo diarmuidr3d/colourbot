@@ -10,13 +10,16 @@ import com.github.jreddit.entity.Submission;
 
 import languageGenerator.LanguageGen;
 import reddit.Reddit;
-import stanfordParser.FrequencyStack;
 import stanfordParser.Parser;
 import stanfordParser.StackBuilder;
-import stanfordParser.TFIDF;
 import stanfordParser.Token;
 import fileReader.TextBot;
 
+/**
+ * Class that takes top reddit posts, runs TFIDF on their comments and uses the LanguageGen specified to place them into sentences of a book
+ * @author Diarmuid
+ *
+ */
 public class BookReddit {
 	
 	private TextBot Ulysses;
@@ -27,6 +30,14 @@ public class BookReddit {
 	private LanguageGen swap;
 	private int submissionNum;
 	private final int MAXSUBMISSION = 10;
+	private String lastlink;
+	
+	/**
+	 * Sets up BookReddit
+	 * @param bookFileName the filename in which the plaintext book is stored in /resource/
+	 * @param languageGen the implementation of languageGen{@link languageGenerator.LanguageGen} to be used to generate sentences
+	 * @param hashStack the implementation of StackBuilder{@link stanfordParser.StackBuilder} to be used for scoring
+	 */
 	
 	public BookReddit(String bookFileName, LanguageGen languageGen, StackBuilder hashStack) {
 		Ulysses = new TextBot(bookFileName);
@@ -38,8 +49,20 @@ public class BookReddit {
 		submissionNum = 0;
 	}
 	
+	/**
+	 * Get a new constructed sentence
+	 * @return A sentence that has been processed
+	 */
 	public String get() {
 		return swap.process(getBookSentence(), getRedditStack());
+	}
+	
+	/**
+	 * Get the URL of the last reddit submission accessed
+	 * @return The article link from the last reddit post accessed.
+	 */
+	public String getLastRedditLink() {
+		return lastlink;
 	}
 	
 	private ArrayList<Token> getBookSentence() {
@@ -53,13 +76,14 @@ public class BookReddit {
 	}
 	
 	private HashMap<String, Stack<Token>> getRedditStack() {
-		List<Submission> submissions =  reddit.getSubmission(MAXSUBMISSION); //returns 1 submission
+		List<Submission> submissions =  reddit.getSubmission(MAXSUBMISSION);
 		ArrayList<String> stringComments = new ArrayList<String>();
 		String redditSub = submissions.get(submissionNum).getTitle();
 		String id = submissions.get(submissionNum).getIdentifier();
+		lastlink = submissions.get(submissionNum).getUrl();
 		List<Comment> comments = reddit.getCommentsForSubmission(id);
 		while (comments == null) {
-			submissions =  reddit.getSubmission(1); //returns 1 submission
+			submissions =  reddit.getSubmission(MAXSUBMISSION);
 			redditSub = submissions.get(submissionNum).getTitle();
 			id = submissions.get(submissionNum).getIdentifier();
 			comments = reddit.getCommentsForSubmission(id);

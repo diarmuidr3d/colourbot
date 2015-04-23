@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import main.java.languageGenerator.Conjunctions;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
@@ -20,6 +19,12 @@ public class CreateSentence implements LanguageGen {
 	Lexicon lexicon = Lexicon.getDefaultLexicon();
 	NLGFactory nlgFactory = new NLGFactory(lexicon);
 	Realiser realiser = new Realiser(lexicon);
+	private HashMap<String,String> replaceWordWithWord;
+
+	public CreateSentence() {
+		replaceWordWithWord = new HashMap<String,String>();
+		replaceWordWithWord.put("Edit", null);
+	}
 
 	public String process(ArrayList<Token> list,
 			HashMap<String, Stack<Token>> stack) {
@@ -145,9 +150,14 @@ public class CreateSentence implements LanguageGen {
 				return subject;
 			}
 		}
-
 		Token nnp1 = readStack.pop();
-		subject = nnp1.getWord();
+		while(replaceWordWithWord.containsKey(nnp1.getWord())) {
+			if (replaceWordWithWord.get(nnp1.getWord()) == null) {
+				nnp1 = readStack.pop();
+			}
+			nnp1 = new Token(replaceWordWithWord.get(nnp1.getWord()), nnp1.getPosTag());
+		}
+		String subject = nnp1.getWord();
 		return subject;
 	}
 
@@ -174,4 +184,62 @@ public class CreateSentence implements LanguageGen {
 
 		return object;
 	}
+
+	/*public static void main(String[] args) {
+	// TODO Auto-generated method stub
+
+	ArrayList<Token> list = new ArrayList<Token>();
+
+	FrequencyStack f = new FrequencyStack();
+	ArrayList<Token> a = new ArrayList<Token>();
+	a.add(new Token("President", "NNP"));
+	a.add(new Token("Obama", "NNP"));
+	a.add(new Token("Castro", "NNP"));
+	a.add(new Token("Cuba", "NNP"));
+	a.add(new Token("phone", "NN"));
+	a.add(new Token("conversation", "NN"));
+	a.add(new Token("leaders", "NNS"));
+	a.add(new Token("countries", "NNS"));
+	a.add(new Token("years", "NNS"));
+
+	// if nnp join
+
+	HashMap<String, Stack<Token>> x = f.sortList(a);
+
+	list.add(new Token("shouts", "VBZ"));
+	list.add(new Token("from", "IN"));
+	list.add(new Token("the", "DT"));
+	list.add(new Token("window", "NN"));
+	list.add(new Token("startling", "JJ"));
+	list.add(new Token("evening", "NN"));
+	list.add(new Token("in", "IN"));
+	list.add(new Token("the", "DT"));
+	list.add(new Token("quadrangle", "NN"));
+	list.add(new Token("a", "DT"));
+	list.add(new Token("deaf", "JJ"));
+	list.add(new Token("gardener", "NN"));
+	list.add(new Token("aproned", "JJ"));
+	list.add(new Token("masked", "VBN"));
+	list.add(new Token("with", "IN"));
+	list.add(new Token("Matthew", "NNP"));
+	list.add(new Token("Arnold", "NNP"));
+	list.add(new Token("s", "POS"));
+	list.add(new Token("face", "NN"));
+	list.add(new Token("pushes", "VBZ"));
+	list.add(new Token("his", "PRP$"));
+	list.add(new Token("Mower", "NN"));
+	list.add(new Token("on the", "NN"));
+	list.add(new Token("sombre", "JJ"));
+	list.add(new Token("lawn", "NN"));
+	list.add(new Token("watching", "VBG"));
+	list.add(new Token("narrowly", "RB"));
+	list.add(new Token("the", "DT"));
+	list.add(new Token("dancing", "NN"));
+	list.add(new Token("notes", "NNS"));
+	list.add(new Token("of", "IN"));
+	list.add(new Token("grasshalms", "NNS"));
+
+	new CreateSentence().process(list, x);
+
+}*/
 }

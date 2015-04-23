@@ -17,7 +17,6 @@ public class Parser {
 	private StanfordCoreNLP pipeline;
 	
 	public Parser() {
-		// creates a StanfordCoreNLP object, with POS tagging
 		Properties props = new Properties();
 	    props.setProperty("annotators", "tokenize, ssplit, pos");
 	    pipeline = new StanfordCoreNLP(props);
@@ -37,7 +36,7 @@ public class Parser {
 		        if(word.equals("-RRB-")) word = ")";
 		        if((retVal.size() > 0) && pos.equals("NNP") && (retVal.get(retVal.size()-1).getPosTag().equals("NNP"))) {
 		        	Token last = retVal.remove(retVal.size()-1);
-		        	word = last +" "+word;
+		        	word = last.getWord() +" "+word;
 		        }
 		        retVal.add(new Token(word,pos));
 		      }
