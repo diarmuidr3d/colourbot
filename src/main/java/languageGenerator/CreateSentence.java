@@ -141,7 +141,7 @@ public class CreateSentence implements LanguageGen {
 
 			if (readStack == null) {
 
-				return fullSubject;
+				return Subject;
 			}
 		}
 
