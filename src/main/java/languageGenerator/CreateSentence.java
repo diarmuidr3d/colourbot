@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import main.java.languageGenerator.Conjunctions;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
@@ -83,29 +84,29 @@ public class CreateSentence {
 
 		List<String> VerbsAndComplements = getVerbAndComplement(list);
 
-		SPhraseSpec p = nlgFactory.createClause(getSubjects(stack),
+		SPhraseSpec sentenceOne = nlgFactory.createClause(getSubjects(stack),
 				VerbsAndComplements.get(0));
 
-		p.addComplement(VerbsAndComplements.get(1));
+		sentenceOne.addComplement(VerbsAndComplements.get(1));
 
-		p.addPostModifier(getObjects(stack));
+		sentenceOne.addPostModifier(getObjects(stack));
 
-		Conjunctions conjunction = new Conjunctions();
-		String conj = conjunction.getRandomConjunction();
+		Conjunctions getConjunction = new Conjunctions();
+		String conj = getConjunction.getRandomConjunction();
 
-		p.addPostModifier(conj);
+		sentenceOne.addPostModifier(conj);
 
 		List<String> VerbsAndComplements2 = getVerbAndComplement(list);
 
-		SPhraseSpec p2 = nlgFactory.createClause(getSubjects(stack),
+		SPhraseSpec sentenceTwo = nlgFactory.createClause(getSubjects(stack),
 				VerbsAndComplements2.get(0));
 
-		p2.addComplement(VerbsAndComplements2.get(1));
+		sentenceTwo.addComplement(VerbsAndComplements2.get(1));
 
-		p2.addPostModifier(getObjects(stack));
+		sentenceTwo.addPostModifier(getObjects(stack));
 
-		DocumentElement s1 = nlgFactory.createSentence(p);
-		DocumentElement s2 = nlgFactory.createSentence(p2);
+		DocumentElement s1 = nlgFactory.createSentence(sentenceOne);
+		DocumentElement s2 = nlgFactory.createSentence(sentenceTwo);
 
 		DocumentElement par1 = nlgFactory
 				.createParagraph(Arrays.asList(s1, s2));
@@ -118,10 +119,6 @@ public class CreateSentence {
 
 			output = output.substring(0, Math.min(output.length(), 140));
 		}
-
-		// System.out.println(output);
-
-		// System.out.println(list.get(0));
 
 		return output;
 
@@ -193,17 +190,16 @@ public class CreateSentence {
 	private String getSubjects(HashMap<String, Stack<Token>> stack) {
 
 		String fullSubject = "";
-		
+
 		Stack<Token> readStack = stack.get("NNP");
 		if (readStack == null) {
 
 			readStack = stack.get("NNPS");
-			
-			if (readStack == null){
-				
-				return fullSubject
-				
-			
+
+			if (readStack == null) {
+
+				return fullSubject;
+
 			}
 		}
 		Token nnp1 = readStack.pop();
@@ -211,7 +207,7 @@ public class CreateSentence {
 
 		String subject = nnp1.getWord();
 		String subject2 = nnp2.getWord();
-		 fullSubject = subject2 + " " + subject;
+		fullSubject = subject2 + " " + subject;
 
 		return fullSubject;
 
