@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import main.java.languageGenerator.LanguageGen;
+import main.java.stanfordParser.Token;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
@@ -15,21 +17,21 @@ import simplenlg.framework.DocumentElement;
 
 public class CreateSentence implements LanguageGen {
 
-	private static final int MINIMUM_SENTENCE_SIZE = 4;
+	private static final int MINIMUM_SENTENCE_SIZE = 10;
 	Lexicon lexicon = Lexicon.getDefaultLexicon();
 	NLGFactory nlgFactory = new NLGFactory(lexicon);
 	Realiser realiser = new Realiser(lexicon);
-	private HashMap<String,String> replaceWordWithWord;
+	private HashMap<String, String> replaceWordWithWord;
 
 	public CreateSentence() {
-		replaceWordWithWord = new HashMap<String,String>();
+		replaceWordWithWord = new HashMap<String, String>();
 		replaceWordWithWord.put("Edit", null);
 	}
 
 	public String process(ArrayList<Token> list,
 			HashMap<String, Stack<Token>> stack) {
 
-		List<String> VerbsAndComplements = getVerbAndComplement(list,false);
+		List<String> VerbsAndComplements = getVerbAndComplement(list);
 
 		SPhraseSpec sentenceOne = nlgFactory.createClause(getSubjects(stack),
 				VerbsAndComplements.get(0));
@@ -38,40 +40,22 @@ public class CreateSentence implements LanguageGen {
 
 		sentenceOne.addPostModifier(getObjects(stack));
 
-		Conjunctions getConjunction = new Conjunctions();
-		String conj = getConjunction.getRandomConjunction();
-
-		sentenceOne.addPostModifier(conj);
-
-		List<String> VerbsAndComplements2 = getVerbAndComplement(list,true);
-
-		SPhraseSpec sentenceTwo = nlgFactory.createClause(getSubjects(stack),
-				VerbsAndComplements2.get(0));
-
-		sentenceTwo.addComplement(VerbsAndComplements2.get(1));
-
-		sentenceTwo.addPostModifier(getObjects(stack));
-
 		DocumentElement s1 = nlgFactory.createSentence(sentenceOne);
-		DocumentElement s2 = nlgFactory.createSentence(sentenceTwo);
 
-		DocumentElement par1 = nlgFactory
-				.createParagraph(Arrays.asList(s1, s2));
-
-		String output = realiser.realise(par1).getRealisation();
-
-		output = output.replace(".", " ");
+		String output = realiser.realise(s1).getRealisation();
 
 		if (output.length() > 140) {
 
 			output = output.substring(0, Math.min(output.length(), 140));
 		}
 
+		// System.out.println(output);
+
 		return output;
 
 	}
 
-	private List<String> getVerbAndComplement(ArrayList<Token> list,boolean partTwo) {
+	private List<String> getVerbAndComplement(ArrayList<Token> list) {
 
 		List<String> verbAndComplementList = new ArrayList<String>();
 
@@ -100,11 +84,11 @@ public class CreateSentence implements LanguageGen {
 			if (firstVerb == true) {
 
 				if (countFromVerb > MINIMUM_SENTENCE_SIZE) {
+
 					if (pair.getPosTag().equals("NN")
 							|| pair.getPosTag().equals("NNS")
 							|| pair.getPosTag().equals("NNP")
 							|| pair.getPosTag().equals("NNPS")) {
-
 						break;
 					}
 				}
@@ -122,7 +106,6 @@ public class CreateSentence implements LanguageGen {
 
 		}
 
-		if(partTwo == true){verb ="";}
 		verbAndComplementList.add(verb);
 		verbAndComplementList.add(complement);
 
@@ -151,13 +134,14 @@ public class CreateSentence implements LanguageGen {
 			}
 		}
 		Token nnp1 = readStack.pop();
-		while(replaceWordWithWord.containsKey(nnp1.getWord())) {
+		while (replaceWordWithWord.containsKey(nnp1.getWord())) {
 			if (replaceWordWithWord.get(nnp1.getWord()) == null) {
 				nnp1 = readStack.pop();
 			}
-			nnp1 = new Token(replaceWordWithWord.get(nnp1.getWord()), nnp1.getPosTag());
+			nnp1 = new Token(replaceWordWithWord.get(nnp1.getWord()),
+					nnp1.getPosTag());
 		}
-		String subject = nnp1.getWord();
+		subject = nnp1.getWord();
 		return subject;
 	}
 
@@ -185,61 +169,7 @@ public class CreateSentence implements LanguageGen {
 		return object;
 	}
 
-	/*public static void main(String[] args) {
-	// TODO Auto-generated method stub
-
-	ArrayList<Token> list = new ArrayList<Token>();
-
-	FrequencyStack f = new FrequencyStack();
-	ArrayList<Token> a = new ArrayList<Token>();
-	a.add(new Token("President", "NNP"));
-	a.add(new Token("Obama", "NNP"));
-	a.add(new Token("Castro", "NNP"));
-	a.add(new Token("Cuba", "NNP"));
-	a.add(new Token("phone", "NN"));
-	a.add(new Token("conversation", "NN"));
-	a.add(new Token("leaders", "NNS"));
-	a.add(new Token("countries", "NNS"));
-	a.add(new Token("years", "NNS"));
-
-	// if nnp join
-
-	HashMap<String, Stack<Token>> x = f.sortList(a);
-
-	list.add(new Token("shouts", "VBZ"));
-	list.add(new Token("from", "IN"));
-	list.add(new Token("the", "DT"));
-	list.add(new Token("window", "NN"));
-	list.add(new Token("startling", "JJ"));
-	list.add(new Token("evening", "NN"));
-	list.add(new Token("in", "IN"));
-	list.add(new Token("the", "DT"));
-	list.add(new Token("quadrangle", "NN"));
-	list.add(new Token("a", "DT"));
-	list.add(new Token("deaf", "JJ"));
-	list.add(new Token("gardener", "NN"));
-	list.add(new Token("aproned", "JJ"));
-	list.add(new Token("masked", "VBN"));
-	list.add(new Token("with", "IN"));
-	list.add(new Token("Matthew", "NNP"));
-	list.add(new Token("Arnold", "NNP"));
-	list.add(new Token("s", "POS"));
-	list.add(new Token("face", "NN"));
-	list.add(new Token("pushes", "VBZ"));
-	list.add(new Token("his", "PRP$"));
-	list.add(new Token("Mower", "NN"));
-	list.add(new Token("on the", "NN"));
-	list.add(new Token("sombre", "JJ"));
-	list.add(new Token("lawn", "NN"));
-	list.add(new Token("watching", "VBG"));
-	list.add(new Token("narrowly", "RB"));
-	list.add(new Token("the", "DT"));
-	list.add(new Token("dancing", "NN"));
-	list.add(new Token("notes", "NNS"));
-	list.add(new Token("of", "IN"));
-	list.add(new Token("grasshalms", "NNS"));
-
-	new CreateSentence().process(list, x);
-
-}*/
+	public static void main(String[] args) {
+		// Does not work with the old way with new sort list.
+	}
 }
