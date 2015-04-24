@@ -19,6 +19,17 @@ public class WordNet  {
 	 * @param word2
 	 * @return closer distance to 0 , the closer the words are related to each other
 	 */
+	public float getDistance(String word1 , String word2 , String posTag){
+		
+		return rwn.getDistance(word1, word2, posTag);
+	}
+	
+	/**
+	 * 	When calling this function make sure that word1 and word2 have same pos tag , e.g n & n 
+	 * @param word1 
+	 * @param word2
+	 * @return closer distance to 0 , the closer the words are related to each other
+	 */
 	public float getDistance(String word1 , String word2 ){
 		
 		return rwn.getDistance(word1, word2, this.getpos(word1));
