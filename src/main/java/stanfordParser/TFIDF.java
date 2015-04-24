@@ -14,9 +14,6 @@ import java.util.TreeMap;
  * 
  */
 public class TFIDF implements StackBuilder {
-	
-	public TFIDF () {
-	}
 
 	/**
 	 * 

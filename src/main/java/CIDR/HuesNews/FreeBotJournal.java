@@ -12,7 +12,7 @@ import bookSwap.BookReddit;
 public class FreeBotJournal {
 
 	public static void main(String[] args) {
-		final int TWITTERMAX = 117;
+		final int TWITTERMAX = 116;
 		BookReddit news = new BookReddit("ULYSSES.txt", new TextSub(), new TFIDF());
 		Tweeter tweet = new Tweeter("twitter_config.txt");
 		while(true) {
@@ -25,7 +25,7 @@ public class FreeBotJournal {
 			System.out.println("Tweeting: "+line+"\n");
 			try {
 				tweet.post(line);
-				TimeUnit.MINUTES.sleep(1);
+				TimeUnit.MINUTES.sleep(15);
 			} catch (InterruptedException e) {
 				System.out.print("----------------- INTERRUPTED ---------------------");
 				e.printStackTrace();

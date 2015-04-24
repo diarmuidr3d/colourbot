@@ -44,7 +44,6 @@ public class BookReddit {
 		Ulysses = new TextBot(bookFileName);
 		reddit = new Reddit("reddit_config.txt");
 		stanParse = new Parser();
-		//freq = new FrequencyStack();
 		freq = hashStack;
 		swap = languageGen;
 		submissionNum = 0;

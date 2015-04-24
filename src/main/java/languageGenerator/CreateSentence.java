@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import main.java.languageGenerator.LanguageGen;
-import main.java.stanfordParser.Token;
+import languageGenerator.LanguageGen;
+import stanfordParser.Token;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
