@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
+import ritaWordnet.WordNet;
 import stanfordParser.Token;
 
 /**
@@ -12,8 +13,17 @@ import stanfordParser.Token;
  *
  */
 public class TextSub implements LanguageGen{
+	
+	private Token lastSubbed;
+	private WordNet wordNet;
+	private HashMap<String, String> replaceWordWithWord;
+	
 	public TextSub() {
-		
+		lastSubbed = null;
+		wordNet = new WordNet();
+		replaceWordWithWord = new HashMap<String, String>();
+		replaceWordWithWord.put("Edit", null);
+		replaceWordWithWord.put("LOL", null);
 	}
 	
 	/**
@@ -24,10 +34,65 @@ public class TextSub implements LanguageGen{
 	public String process(ArrayList<Token> sentence, HashMap<String, Stack<Token>> posTagMap) {
 		String retVal = "";
 		for(Token word : sentence) {
-			if ((posTagMap.containsKey(word.getPosTag())) && posTagMap.get(word.getPosTag()).size() > 0 && isNoun(word.getPosTag())) retVal += " "+posTagMap.get(word.getPosTag()).pop().getWord();
-			else retVal += " "+word.getWord();
+			Token tokenToInsert = getTokenToInsert(word, posTagMap);
+			while (replaceWordWithWord.containsKey(tokenToInsert.getWord())) {
+				if (replaceWordWithWord.get(tokenToInsert.getWord()) == null) {
+					tokenToInsert = getTokenToInsert(word, posTagMap);
+				}
+				tokenToInsert = new Token(replaceWordWithWord.get(tokenToInsert.getWord()),tokenToInsert.getPosTag());
+			}
+			retVal += " "+tokenToInsert.getWord();
 		}
+		lastSubbed = null;
 		return retVal;
+	}
+	
+	private Token getTokenToInsert(Token word, HashMap<String, Stack<Token>> posTagMap) {
+		if ((posTagMap.containsKey(word.getPosTag())) && posTagMap.get(word.getPosTag()).size() > 0 && isNoun(word.getPosTag())) {
+			if (lastSubbed == null) {
+				lastSubbed = posTagMap.get(word.getPosTag()).pop();
+				return lastSubbed;
+			} else {
+				return getClosest(posTagMap.get(word.getPosTag()));
+			}
+		} else {
+			return word;
+		}
+	}
+	
+	private Token getClosest(Stack<Token> stack) {
+		ArrayList<Token> poppedTokens = new ArrayList<Token>();
+		int bestLoc = 0, currentLoc = 0;
+		Token first = stack.pop();
+		poppedTokens.add(first);
+		String wnetPos = getWnetPos(first.getPosTag());
+		float bestScore = wordNet.getDistance(lastSubbed.getWord(), first.getWord(), wnetPos);
+		while (!stack.empty()) {
+			currentLoc++;
+			Token t = stack.pop();
+			poppedTokens.add(t);
+			wnetPos = getWnetPos(t.getPosTag());
+			float thisScore = wordNet.getDistance(lastSubbed.getWord(), t.getWord(), wnetPos);
+			if(thisScore < bestScore) {
+				bestScore = thisScore;
+				bestLoc = currentLoc;
+			}
+		}
+		Token ret = poppedTokens.remove(bestLoc);
+		for(int i = poppedTokens.size()-1; i >= 0; i--) {
+			stack.add(poppedTokens.get(i));
+		}
+		return ret;
+	}
+	
+	private String getWnetPos(String stanfordPos) {
+		String ret;
+		if(stanfordPos.contains("NN")) ret = "n";
+		else if (stanfordPos.contains("RB")) ret = "r";
+		else if (stanfordPos.contains("JJ")) ret = "a";
+		else if (stanfordPos.contains("VB")) ret = "v";
+		else return null;
+		return ret;
 	}
 	
 	private boolean isNoun(String pos) {
