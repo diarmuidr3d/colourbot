@@ -56,7 +56,12 @@ public class Reddit
      */
     public List<Submission> getSubmission(int numberOfSubmission) {
         Submissions sub = new Submissions(getRestClient(), getUser());
-        List<Submission> submissionsSubreddit = sub.ofSubreddit(SUBMISSION_TOPIC, SubmissionSort.TOP, -1, numberOfSubmission, null, null, true);
+        List<Submission> submissionsSubreddit = null;
+        try {
+        submissionsSubreddit = sub.ofSubreddit(SUBMISSION_TOPIC, SubmissionSort.TOP, -1, numberOfSubmission, null, null, true);
+        } catch (RetrievalFailedException e) {
+        	e.printStackTrace();
+        }
         return  submissionsSubreddit;
 
     }

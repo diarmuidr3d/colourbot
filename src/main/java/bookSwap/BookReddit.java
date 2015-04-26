@@ -25,7 +25,6 @@ public class BookReddit {
 	private TextBot Ulysses;
 	private Reddit reddit;
 	private Parser stanParse;
-	//private FrequencyStack freq;
 	private StackBuilder freq;
 	private LanguageGen swap;
 	private int submissionNum;
@@ -78,6 +77,9 @@ public class BookReddit {
 	
 	private HashMap<String, Stack<Token>> getRedditStack() {
 		List<Submission> submissions =  reddit.getSubmission(MAXSUBMISSION);
+		while (submissions == null) {
+			submissions =  reddit.getSubmission(MAXSUBMISSION);
+		}
 		ArrayList<String> stringComments = new ArrayList<String>();
 		String redditSub = submissions.get(submissionNum).getTitle();
 		String id = submissions.get(submissionNum).getIdentifier();

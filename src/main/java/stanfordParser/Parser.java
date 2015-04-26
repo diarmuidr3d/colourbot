@@ -13,15 +13,28 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
 
+/**
+ * Utilises Stanford Core NLP to add POS tags to a piece of text.
+ * @author Diarmuid Ryan
+ *
+ */
 public class Parser {
 	private StanfordCoreNLP pipeline;
 	
+	/**
+	 * Sets up the Parser
+	 */
 	public Parser() {
 		Properties props = new Properties();
 	    props.setProperty("annotators", "tokenize, ssplit, pos");
 	    pipeline = new StanfordCoreNLP(props);
 	}
 	
+	/**
+	 * Parses a piece of plain text into an {@link java.util.ArrayList} of {@link Token}s
+	 * @param text The plaintext to be parsed
+	 * @return An ArrayList of Tokens of the parsed text
+	 */
 	public ArrayList<Token> parse (String text) {
 		ArrayList<Token> retVal = new ArrayList<Token>();
 		Annotation document = new Annotation(text);
@@ -44,8 +57,8 @@ public class Parser {
 		return retVal;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Parser p = new Parser();
 		System.out.println(p.parse("At least 15 dead and 60 wounded as Al-Shabab gunmen attack university in Kenya targeting Christians."));
-	}
+	}*/
 }
