@@ -1,5 +1,3 @@
-package CIDR.HuesNews;
-
 import java.util.concurrent.TimeUnit;
 
 import languageGenerator.CreateSentence;
@@ -13,6 +11,7 @@ public class FreeBotJournal {
 
 	public static void main(String[] args) {
 		final int TWITTERMAX = 116;
+		//Can also add CreateSentence in place of TextSub if you wish to use simpleNLG
 		BookReddit news = new BookReddit("ULYSSES.txt", new TextSub(), new TFIDF());
 		Tweeter tweet = new Tweeter("twitter_config.txt");
 		while(true) {
