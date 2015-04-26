@@ -42,7 +42,7 @@ public class Tweeter extends TwitterBot {
 	
 	/**
 	 * Posts a string to the user's Twitter Account
-	 * @param p
+	 * @param p The string to be posted. Should be less than 140 characters or 117 characters and a URL
 	 */
 	public void post(String p) {
 		try {

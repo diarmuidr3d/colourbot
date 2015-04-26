@@ -85,7 +85,7 @@ public class TFIDF implements StackBuilder {
 		return ret;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		TFIDF t = new TFIDF();
 		ArrayList<ArrayList<Token>> to = new ArrayList<ArrayList<Token>>();
 		to.add(new ArrayList<Token>());
@@ -101,6 +101,6 @@ public class TFIDF implements StackBuilder {
 		to.get(1).add(new Token("Greece", "NNP"));
 		to.get(1).add(new Token("mills", "NNS"));
 		t.sortList(to);
-		}
+		}*/
 	
 }

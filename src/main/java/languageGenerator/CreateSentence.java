@@ -168,8 +168,4 @@ public class CreateSentence implements LanguageGen {
 
 		return object;
 	}
-
-	public static void main(String[] args) {
-		// Does not work with the old way with new sort list.
-	}
 }

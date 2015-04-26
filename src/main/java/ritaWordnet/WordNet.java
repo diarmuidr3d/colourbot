@@ -14,9 +14,10 @@ public class WordNet  {
 	}
 	
 	/**
-	 * 	When calling this function make sure that word1 and word2 have same pos tag , e.g n & n 
-	 * @param word1 
-	 * @param word2
+	 * 	When calling this function make sure that word1 and word2 have same pos tag , e.g n and n 
+	 * @param word1 The first word to be compared
+	 * @param word2 The second word to be compared
+	 * @param posTag The pos tag for the two words
 	 * @return closer distance to 0 , the closer the words are related to each other
 	 */
 	public float getDistance(String word1 , String word2 , String posTag){
@@ -25,9 +26,9 @@ public class WordNet  {
 	}
 	
 	/**
-	 * 	When calling this function make sure that word1 and word2 have same pos tag , e.g n & n 
-	 * @param word1 
-	 * @param word2
+	 * 	When calling this function make sure that word1 and word2 have same pos tag , e.g n and n 
+	 * @param word1 The first word to be compared
+	 * @param word2 The second word to be compared
 	 * @return closer distance to 0 , the closer the words are related to each other
 	 */
 	public float getDistance(String word1 , String word2 ){
@@ -39,7 +40,7 @@ public class WordNet  {
 		return rwn.getBestPos(word);
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 
 		WordNet wn = new WordNet();
 		
@@ -54,6 +55,6 @@ public class WordNet  {
 		 
 		 
 
-	}
+	}*/
 
 }
